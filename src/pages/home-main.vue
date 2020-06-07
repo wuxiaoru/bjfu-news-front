@@ -55,8 +55,7 @@
               <!-- <i class="el-icon-arrow-down"></i> -->
             </span>
             <span class="bottom" @click="toPerInfo">个人信息</span>
-          </div>
-          
+          </div>          
         </div>
       </el-header>
       <!-- 主体内容区 -->
@@ -126,8 +125,7 @@ export default {
     var data = require("../assets/lib/mockData.js");
     this.menulist = data.navData[0].data
     console.log(this.menulist);
-      
-  }
+  },
 };
 </script>
 

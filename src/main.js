@@ -11,6 +11,9 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 // 导入全局样式表
 import './assets/css/global.css'
+// 全局注册加载提示的组件
+import loading from './components/loading/loading'
+Vue.component('loading', loading)
 
 Vue.config.productionTip = false
 
