@@ -18,20 +18,24 @@ const routes = [
         component: () => import('../pages/contributor/news-list.vue')
       },
       {
+        path: '/section-list',
+        component: () => import('../pages/editor/section-list.vue')
+      },
+      {
+        path: '/preview-section',
+        component: () => import('../pages/editor/preview-section.vue')
+      },
+      {
+        path: '/approval-section',
+        component: () => import('../pages/editor/approval-section.vue')
+      },
+      {
         path: '/add-manuscript',
         component: () => import('../pages/contributor/add-manuscript')
       },
       {
         path: '/common-table',
         component: () => import('../components/table/common-table')
-      },
-      {
-        path: '/template',
-        component: () => import('../pages/template1')
-      },
-      {
-        path: '/form',
-        component: () => import('../pages/form-template')
       }
     ]
   },

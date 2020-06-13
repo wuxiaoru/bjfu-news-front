@@ -37,7 +37,7 @@ const navData = [{
       {
         "id": 107,
         "authName": "稿件列表",
-        "path": null,
+        "path": '',
         "children": []
       },
       {
@@ -55,7 +55,7 @@ const navData = [{
       {
         "id": 112,
         "authName": "稿件列表",
-        "path": null,
+        "path": 'section-list',
         "children": []
       },
       {
