@@ -15,7 +15,7 @@
         :collapse="menuCollapse"
         :collapse-transition="false"
         router
-        :default-active = "activePath"
+        :default-active="activePath"
       >
         <!-- 一级菜单 -->
         <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
@@ -27,7 +27,12 @@
             <span>{{item.authName}}</span>
           </template>
           <!-- 二级菜单 -->
-          <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="chooseActivePath('/' + subItem.path)">
+          <el-menu-item
+            :index="'/' + subItem.path"
+            v-for="subItem in item.children"
+            :key="subItem.id"
+            @click="chooseActivePath('/' + subItem.path, subItem.authName)"
+          >
             <template slot="title">
               <!-- 图标 -->
               <i :class="iconsObj[subItem.id]"></i>
@@ -55,7 +60,7 @@
               <!-- <i class="el-icon-arrow-down"></i> -->
             </span>
             <span class="bottom" @click="toPerInfo">个人信息</span>
-          </div>          
+          </div>
         </div>
       </el-header>
       <!-- 主体内容区 -->
@@ -102,7 +107,7 @@ export default {
         "121": "el-icon-document-copy"
       },
       // 被激活的路径
-      activePath: ''
+      activePath: ""
     };
   },
   methods: {
@@ -112,20 +117,23 @@ export default {
     },
     // 跳转个人信息界面
     toPerInfo() {
-      this.$router.push('/person-info')  
+      this.$router.push("/person-info");
     },
     // 高亮显示的路径
-    chooseActivePath(activePath){
-      sessionStorage.setItem('activePath',activePath)
-      this.activePath = activePath
+    chooseActivePath(activePath, activeName) {
+      sessionStorage.setItem("activePath", activePath);
+      sessionStorage.setItem("activeName", activeName);
+      this.activePath = activePath;
+      this.headline = activeName;
     }
   },
   created() {
     // 引入数据文件，获取数据的值并加以显示
     var data = require("../assets/lib/mockData.js");
-    this.menulist = data.navData[0].data
-    console.log(this.menulist);
-  },
+    this.menulist = data.navData[0].data;
+    this.activePath = sessionStorage.getItem("activePath");
+    this.headline = sessionStorage.getItem("activeName ");
+  }
 };
 </script>
 
@@ -179,25 +187,25 @@ export default {
       height: 36px;
       cursor: pointer;
       transform-style: preserve-3d;
-      transition: all .4s;
+      transition: all 0.4s;
     }
     .box:hover {
-        transform: rotateX(90deg);
+      transform: rotateX(90deg);
     }
     .front,
     .bottom {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
     }
     .front {
-        z-index: 1;
-        transform: translateZ(17.5px);
+      z-index: 1;
+      transform: translateZ(17.5px);
     }
     .bottom {
-        transform: translateY(17.5px) rotateX(-90deg);
+      transform: translateY(17.5px) rotateX(-90deg);
     }
   }
 }

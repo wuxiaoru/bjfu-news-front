@@ -31,17 +31,27 @@ const routes = [
       },
       {
         path: '/add-manuscript',
+        name: 'add-manuscript',
         component: () => import('../pages/contributor/add-manuscript')
       },
       {
-        path: '/common-table',
-        component: () => import('../components/table/common-table')
+        path: '/state-info',
+        name: 'state-info',
+        component: () => import('../pages/contributor/state-info')
+      },
+      {
+        path: '/doc-list',
+        component: () => import('../pages/approve/doc-list')
       }
     ]
   },
   {
     path: '/person-info',
     component: () => import('../pages/person-info')
+  },
+  {
+    path: '/improve-info',
+    component: () => import('../pages/improve-info')
   }
 ]
 

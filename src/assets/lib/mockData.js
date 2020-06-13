@@ -16,18 +16,12 @@ const navData = [{
         "path": 'add-manuscript',
         "children": []
       },
-      {
-        "id": 104,
-        "authName": "查看稿件",
-        "path": null,
-        "children": []
-      },
-      {
-        "id": 105,
-        "authName": "编写稿件",
-        "path": null,
-        "children": []
-      }
+      // {
+      //   "id": 104,
+      //   "authName": "查看稿件",
+      //   "path": null,
+      //   "children": []
+      // }
     ]
   }, {
     "id": 106,
@@ -37,7 +31,7 @@ const navData = [{
       {
         "id": 107,
         "authName": "稿件列表",
-        "path": '',
+        "path": 'doc-list',
         "children": []
       },
       {

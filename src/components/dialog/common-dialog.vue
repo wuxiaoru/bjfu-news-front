@@ -1,5 +1,5 @@
 <template>
-  <el-dialog :title="dialogTitle" :visible.sync="dialogVisible">
+  <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :before-close="isCancel">
     <el-form>
       <template v-for="(item,index) in approvalForm">
         <!-- 如果是input框的话 -->
@@ -18,13 +18,18 @@
           :label="item.label"
           :label-width="formLabelWidth"
         >
-          <el-select v-model="item.approval" placeholder="请选择审批人" style="width:100%">
+          <el-select
+            v-model="item.approval"
+            placeholder="请选择审批人"
+            style="width:100%"
+            @change="changeApproval(item.approval)"
+          >
             <!-- 循环下拉框的数据 -->
             <el-option
               v-for="(item, index) in item.option"
               :key="index"
-              :label="item.label"
-              :value="item.value"
+              :label="item.name"
+              :value="item.id"
             ></el-option>
           </el-select>
         </el-form-item>
@@ -76,7 +81,10 @@ export default {
     },
     // 点击确认按钮时 子组件向父组件传值
     isOk() {
-      this.$emit("ok", "false");
+      this.$emit("ok", { visible: "false", title: this.dialogTitle });
+    },
+    changeApproval(id) {
+      this.$emit("pushId", id);
     }
   }
 };
