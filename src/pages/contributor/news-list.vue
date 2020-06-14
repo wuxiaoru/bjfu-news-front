@@ -129,11 +129,11 @@ export default {
         // 文章标题
         title: "测试",
         // 作者姓名
-        docAuthor: "zhangsan",
+        docAuthor: "lisi",
         // 稿件状态
         status: "DRAFT",
         // 提交日期
-        date: ["2020-06-11 00:00:00", "2020-07-05 23:59:59"]
+        date: ["2020-06-11 16:00:00", "2020-06-11 23:59:59"]
       },
       // 稿件状态选择项
       stateList: [
@@ -371,18 +371,12 @@ export default {
         title: this.searchForm.title,
         status: this.searchForm.status,
         startTime: this.searchForm.date[0],
-        endTime: this.searchForm.date[0],
+        endTime: this.searchForm.date[1],
         size: 10,
         page: 0
       };
-      console.log(JSON.stringify(body));
-
       this.$axios
-        .post(
-          // process.env.VUE_APP_Contribution + "/list.vpage",
-          "/v1/contribution/list.vpage",
-          body
-        )
+        .post(process.env.VUE_APP_Contribution + "/list.vpage", body)
         .then(res => {
           console.log(res);
           if (res.success == true) {
