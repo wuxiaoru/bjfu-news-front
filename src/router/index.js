@@ -43,6 +43,15 @@ const routes = [
         path: '/doc-list',
         component: () => import('../pages/approve/doc-list')
       }
+      ,
+      {
+        path: '/user-list/:userType',
+        component: () => import('../pages/admin/userList.vue')
+      },
+      {
+        path: '/add-user/:userType',
+        component: () => import('../pages/admin/addUser.vue')
+      }
     ]
   },
   {

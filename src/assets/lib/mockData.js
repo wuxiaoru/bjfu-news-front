@@ -67,25 +67,25 @@ const navData = [{
       {
         "id": 117,
         "authName": "审批人列表",
-        "path": null,
+        "path": "user-list/approver",
         "children": []
       },
       {
         "id": 118,
         "authName": "编辑人列表",
-        "path": null,
+        "path": "user-list/editor",
         "children": []
       },
       {
         "id": 119,
         "authName": "添加审批人",
-        "path": null,
+        "path": "add-user/approver",
         "children": []
       },
       {
         "id": 120,
         "authName": "添加编辑人",
-        "path": null,
+        "path": "add-user/editor",
         "children": []
       },
       {
