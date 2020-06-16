@@ -14,14 +14,16 @@
         <el-form-item label="稿件上传" prop="docUrl">
           <el-row>
             <el-col :span="20">
-              <el-input v-model="manuscriptForm.docUrl" placeholder="请上传文章" :disabled="true"></el-input>
+              <el-input v-model="manuscriptForm.docTitle" placeholder="请上传文章" :disabled="true"></el-input>
             </el-col>
             <el-col :span="4" style="text-align:right">
               <el-upload
-                action="https://jsonplaceholder.typicode.com/posts/"
+                :action="fileURL"
                 :show-file-list="false"
+                :on-success="fileSuccess"
+                accept=".doc, .docx"
               >
-                <el-button style="height:40px" size="small" type="primary" @click="upload">选择本地文件</el-button>
+                <el-button style="height:40px" size="small" type="primary">选择本地文件</el-button>
               </el-upload>
             </el-col>
           </el-row>
@@ -39,6 +41,9 @@
               <el-upload
                 action="https://jsonplaceholder.typicode.com/posts/"
                 :show-file-list="false"
+                multiple
+                :limit="3"
+                accept="image/*"
               >
                 <el-button style="height:40px" size="small" type="primary">选择本地文件</el-button>
               </el-upload>
@@ -91,7 +96,9 @@ export default {
         // 稿件作者
         docAuthor: "",
         // 稿件地址
-        docUrl: "d://file/dsf.doc",
+        docUrl: "",
+        // 稿件名称
+        docTitle: "",
         // 图片作者
         picAuthor: "",
         // 图片地址
@@ -117,18 +124,19 @@ export default {
       // 对话框显示内容
       approvalForm: [],
       // 审批人列表
-      approvalList: []
+      approvalList: [],
+      // 上传的文件地址
+      fileURL: process.env.VUE_APP_Contribution + "/upload.vpage"
     };
   },
   components: {
     commonDialog
   },
   methods: {
-    // 上传文件
-    upload() {
-      console.log("我要上传文件");
-
-      // this.$axios.post(process.env.VUE_APP_Contribution + "/upload.vpage")
+    // 上传文件成功后的回调函数
+    fileSuccess(response, file, fileList) {
+      this.manuscriptForm.docUrl = response.data.toString();
+      this.manuscriptForm.docTitle = file.name;
     },
     // 新建文章点击提交稿件时 先判断验证是否通过 然后弹出对话框 选择审批人
     submitForm(formName) {

@@ -45,7 +45,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" style="text-align: center">
-            <el-button type="primary">搜索</el-button>
+            <el-button type="primary" @click="queryList">搜索</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -74,7 +74,7 @@
           <el-button
             type="info"
             size="mini"
-            v-if="scope.row.status == '草稿' || scope.row.status == '审批不过待修改'"
+            v-if="scope.row.status == '草稿' || scope.row.status == '审稿不过待修改'"
             @click="editNews(scope.row)"
           >编辑</el-button>
           <!-- 草稿 的可以删除 -->
@@ -89,7 +89,7 @@
             type="danger"
             size="mini"
             @click="recallNews(scope.row)"
-            v-if="scope.row.status == '待审批'"
+            v-if="scope.row.status == '待审稿'"
           >撤回</el-button>
         </template>
       </common-table>
@@ -127,21 +127,24 @@ export default {
       // 搜索表单的内容
       searchForm: {
         // 文章标题
-        title: "测试",
+        title: "",
         // 作者姓名
-        docAuthor: "lisi",
+        docAuthor: "",
         // 稿件状态
-        status: "DRAFT",
+        status: null,
         // 提交日期
-        date: ["2020-06-11 16:00:00", "2020-06-11 23:59:59"]
+        date: []
       },
       // 稿件状态选择项
       stateList: [
-        { label: "全部", value: "0" },
-        { label: "草稿", value: "1" },
-        { label: "待审稿", value: "2" },
-        { label: "重投待审稿", value: "3" },
-        { label: "审批不过待修改", value: "4" }
+        { label: "全部", value: null },
+        { label: "草稿", value: "DRAFT" },
+        { label: "待审稿", value: "APPROVAL_PENDING" },
+        { label: "重投待审稿", value: "RE_APPROVAL_PENDING" },
+        { label: "审稿通过等待编辑部处理", value: "APPROVE" },
+        { label: "审稿不过待修改", value: "APPROVAL_REJECTION" },
+        { label: "编辑部已录用", value: "HIRE" },
+        { label: "编辑部已拒稿", value: "REJECTION" }
       ],
       // 表格数据
       tableData: [
@@ -198,7 +201,7 @@ export default {
       // 查询表格的条件信息
       queryInfo: {
         query: "",
-        pagenum: 1,
+        pagenum: 0,
         pagesize: 10
       },
       // 总数量
@@ -210,7 +213,11 @@ export default {
       // 对话框显示内容
       approvalForm: [],
       // 稿件id
-      id: ""
+      id: "",
+      // 登录的用户id
+      userId: 1,
+      // 审批人列表
+      approveList: []
     };
   },
   // 注册组件
@@ -222,10 +229,12 @@ export default {
     // 监听页大小的变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;
+      this.queryList();
     },
     // 监听页数的变化
     handleCurrentChange(newCurrent) {
       this.queryInfo.pagenum = newCurrent;
+      this.queryList();
     },
     // 点击新建文章按钮
     createArticle() {
@@ -253,11 +262,7 @@ export default {
           type: "select",
           label: "选择审稿人",
           approval: "",
-          option: [
-            { name: "张老师", id: "0" },
-            { name: "杨老师", id: "1" },
-            { name: "米老师", id: "2" }
-          ]
+          option: this.approveList
         }
       );
     },
@@ -328,6 +333,7 @@ export default {
         .then(res => {
           if (res.success == true) {
             // 提交稿件成功，重新调用获取稿件列表的接口
+            this.queryList();
           } else {
             this.$message.error("提交失败，请稍后再试");
           }
@@ -336,10 +342,11 @@ export default {
     // 删除稿件
     delete() {
       this.$axios
-        .post(process.env.VUE_APP_Contribution + "/submit.vpage?id=" + this.id)
+        .post(process.env.VUE_APP_Contribution + "/delete.vpage?id=" + this.id)
         .then(res => {
           if (res.success == true) {
             // 稿件删除成功，重新调用获取稿件列表的接口
+            this.queryList();
           } else {
             this.$message.error("删除稿件失败，请稍后再试");
           }
@@ -353,7 +360,8 @@ export default {
         )
         .then(res => {
           if (res.success == true) {
-            // 稿件删除成功，重新调用获取稿件列表的接口
+            // 稿件撤回成功，重新调用获取稿件列表的接口
+            this.queryList();
           } else {
             this.$message.error("撤回稿件失败，请稍后再试");
           }
@@ -366,44 +374,61 @@ export default {
     // 查询所有稿件列表
     queryList() {
       const body = {
-        userId: 1,
+        userId: this.userId,
         docAuthor: this.searchForm.docAuthor,
         title: this.searchForm.title,
         status: this.searchForm.status,
         startTime: this.searchForm.date[0],
         endTime: this.searchForm.date[1],
-        size: 10,
-        page: 0
+        size: this.queryInfo.pagesize,
+        page: this.queryInfo.pagenum
       };
       this.$axios
         .post(process.env.VUE_APP_Contribution + "/list.vpage", body)
         .then(res => {
           console.log(res);
           if (res.success == true) {
-            this.tableData == res.data.list;
+            this.tableData = res.data.list;
+            this.tableData.map(item => {
+              if (item.status == "DRAFT") {
+                item.status = "草稿";
+              } else if (item.status == "APPROVAL_PENDING") {
+                item.status = "待审稿";
+              } else if (item.status == "RE_APPROVAL_PENDING") {
+                item.status = "重投待审稿";
+              } else if (item.status == "APPROVE") {
+                item.status = "审稿通过等待编辑部处理";
+              } else if (item.status == "APPROVAL_REJECTION") {
+                item.status = "审稿不过待修改";
+              } else if (item.status == "HIRE") {
+                item.status = "编辑部已录用";
+              } else {
+                item.status = "编辑部已拒稿";
+              }
+              return item;
+            });
             this.total = res.data.totalCount;
+          }
+        });
+    },
+    // 获取所有的审稿人列表
+    getApproveList() {
+      this.$axios
+        .get(
+          process.env.VUE_APP_Contribution +
+            "/approve/list.vpage?userId=" +
+            this.userId
+        )
+        .then(res => {
+          if (res.success == true) {
+            this.approveList = res.data;
           }
         });
     }
   },
-  created() {
-    this.queryList();
-    this.tableData.map(item => {
-      if (item.status == "DRAFT") {
-        item.status = "草稿";
-      } else if (item.status == "APPROVAL_PENDING") {
-        item.status = "待审批";
-      } else if (item.status == "APPROVE") {
-        item.status = "审批通过等待编辑部处理";
-      } else if (item.status == "APPROVAL_REJECTION") {
-        item.status = "审批不过待修改";
-      } else if (item.status == "HIRE") {
-        item.status = "编辑部已录用";
-      } else {
-        item.status == "编辑部已拒稿";
-      }
-      return item;
-    });
+  async created() {
+    await this.queryList();
+    this.getApproveList();
   }
 };
 </script>

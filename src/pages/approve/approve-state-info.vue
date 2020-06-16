@@ -8,17 +8,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件题目">
-              <el-input v-model="nowState.title" disabled></el-input>
+              <el-input v-model="nowState.title"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审稿人">
-              <el-input v-model="nowState.approveName" disabled></el-input>
+              <el-input v-model="nowState.approveName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑人">
-              <el-input v-model="nowState.editorName" disabled></el-input>
+              <el-input v-model="nowState.editorName"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -26,7 +26,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="作者">
-              <el-input v-model="nowState.docAuthor" disabled></el-input>
+              <el-input v-model="nowState.docAuthor"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -44,17 +44,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="提交时间">
-              <el-input v-model="nowState.submitTime" disabled></el-input>
+              <el-input v-model="nowState.submitTime"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审批时间">
-              <el-input v-model="nowState.approveTime" disabled></el-input>
+              <el-input v-model="nowState.approveTime"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑时间">
-              <el-input v-model="nowState.editTime" disabled></el-input>
+              <el-input v-model="nowState.editTime"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -62,7 +62,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件状态">
-              <el-input v-model="status[nowState.status]" disabled></el-input>
+              <el-input v-model="nowState.status"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -137,6 +137,13 @@ export default {
           status: "审批通过待编辑部处理",
           docAuthor: "我不猜.doc",
           suggestion: "暂无"
+        },
+        {
+          operateTime: "2020-6-15 11:17:55",
+          operateName: "王老师",
+          status: "待审批",
+          docAuthor: "我想让你猜.doc",
+          suggestion: "真烦"
         }
       ],
       // 表格操作
@@ -174,16 +181,7 @@ export default {
       // 控制意见弹出框是否显示
       dialogVisible: false,
       // 显示在界面上的意见
-      suggestion: "",
-      status: {
-        DRAFT: "草稿",
-        APPROVAL_PENDING: "待审稿",
-        RE_APPROVAL_PENDING: "重投待审稿",
-        APPROVE: "审稿通过等待编辑部处理",
-        APPROVAL_REJECTION: "审稿不过待修改",
-        HIRE: "编辑部已录用",
-        REJECTION: "编辑部已拒稿"
-      }
+      suggestion: ""
     };
   },
   components: {
@@ -237,17 +235,15 @@ export default {
               if (item.status == "DRAFT") {
                 item.status = "草稿";
               } else if (item.status == "APPROVAL_PENDING") {
-                item.status = "待审稿";
-              } else if (item.status == "RE_APPROVAL_PENDING") {
-                item.status = "重投待审稿";
+                item.status = "待审批";
               } else if (item.status == "APPROVE") {
-                item.status = "审稿通过等待编辑部处理";
+                item.status = "审批通过等待编辑部处理";
               } else if (item.status == "APPROVAL_REJECTION") {
-                item.status = "审稿不过待修改";
+                item.status = "审批不过待修改";
               } else if (item.status == "HIRE") {
                 item.status = "编辑部已录用";
               } else {
-                item.status = "编辑部已拒稿";
+                item.status == "编辑部已拒稿";
               }
               return item;
             });
@@ -257,8 +253,7 @@ export default {
   },
   created() {
     console.log(this.$route.params.id);
-
-    this.scanDetail(this.$route.params.id);
+    // this.scanDetail(this.$route.params.id);
   }
 };
 </script>

@@ -42,7 +42,12 @@ const routes = [
       {
         path: '/doc-list',
         component: () => import('../pages/approve/doc-list')
-      }
+      },
+      {
+        path: '/approve-state-info',
+        name: 'approve-state-info',
+        component: () => import('../pages/approve/approve-state-info')
+      },
     ]
   },
   {

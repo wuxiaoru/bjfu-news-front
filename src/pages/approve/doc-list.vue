@@ -61,13 +61,13 @@
           <el-button
             type="warning"
             size="mini"
-            v-if="scope.row.status == '待审稿' || scope.row.status == '重投待审稿'"
+            v-if="scope.row.status == '待审批' || scope.row.status == '重投待审稿'"
             @click="editNews(scope.row)"
           >审稿</el-button>
           <!-- 草稿 的可以删除 -->
-          <el-button type="danger" size="mini" v-else-if="scope.row.status == '审批通过待编辑部处理'">撤回</el-button>
+          <el-button type="danger" size="mini" v-else-if="scope.row.status == '审批通过等待编辑部处理'">撤回</el-button>
           <!-- 待审批 的可以撤回 -->
-          <el-button type="danger" size="mini" v-else>追加</el-button>
+          <el-button type="primary" size="mini" v-else>追加</el-button>
         </template>
       </common-table>
       <!-- 分页区域 -->
@@ -94,6 +94,8 @@
 </template>
 
 <script>
+import commonTable from "../../components/table/common-table";
+import commonDialog from "../../components/dialog/common-dialog";
 export default {
   data() {
     return {
@@ -120,14 +122,14 @@ export default {
         {
           id: 2,
           title: "林业信息拉萨解放了书法家",
-          status: "DRAFT",
+          status: "APPROVE",
           docAuthor: "zhangshan",
           submitTime: "2020-06-07 00:10:59"
         },
         {
           id: 6,
           title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
+          status: "APPROVAL_REJECTION",
           docAuthor: "zhangshan",
           submitTime: "2020-06-11 08:07:26"
         }
@@ -153,6 +155,8 @@ export default {
           sortable: true
         }
       ],
+      // 控制操作列是否显示
+      isOperate: true,
       // 稿件状态选择项
       stateList: [
         { label: "全部", value: "0" },
@@ -160,14 +164,33 @@ export default {
         { label: "待审稿", value: "2" },
         { label: "重投待审稿", value: "3" },
         { label: "审批不过待修改", value: "4" }
-      ]
+      ],
+      // 查询表格的条件信息
+      queryInfo: {
+        query: "",
+        pagenum: 1,
+        pagesize: 10
+      },
+      // 总数量
+      total: 0,
+      // 对话框标题
+      dialogTitle: "",
+      // 控制 对话框 是否显示
+      dialogVisible: false,
+      // 对话框显示内容
+      approvalForm: []
     };
+  },
+  // 注册组件
+  components: {
+    commonTable,
+    commonDialog
   },
   methods: {
     // 点击查看按钮触发的事件
     scanNews(row) {
       this.$router.push({
-        name: "state-info",
+        name: "approve-state-info",
         params: { id: row.id }
       });
     },
@@ -191,7 +214,36 @@ export default {
         };
         console.log(Object.assign(test));
       });
+    },
+    // 监听页大小的变化
+    handleSizeChange(newSize) {
+      this.queryInfo.pagesize = newSize;
+    },
+    // 监听页数的变化
+    handleCurrentChange(newCurrent) {
+      this.queryInfo.pagenum = newCurrent;
+    },
+    cancel() {
+      console.log("用户点击了退出");
+    },
+    ok() {
+      console.log("用户点击了OK");
+    },
+    getId() {
+      console.log("我要获取id了");
     }
+  },
+  created() {
+    this.tableData.map(item => {
+      if (item.status == "APPROVAL_PENDING") {
+        item.status = "待审批";
+      } else if (item.status == "APPROVE") {
+        item.status = "审批通过等待编辑部处理";
+      } else if (item.status == "APPROVAL_REJECTION") {
+        item.status = "审批不过待修改";
+      }
+      return item;
+    });
   }
 };
 </script>

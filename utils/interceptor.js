@@ -26,7 +26,7 @@ axios.interceptors.response.use(response => {
       clearHandler();
     }
   }
-  return response;
+  return response.data;
 },
   err => {
     // 判断是否授权
