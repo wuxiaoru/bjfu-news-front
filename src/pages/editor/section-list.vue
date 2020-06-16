@@ -48,7 +48,10 @@
 
       <!-- Tabs标签页 -->
       <div>
-        <el-button :class="searchType == 0 ? 'el-button-focus' : ''" @click="changeSearchType(0)">已审核待编辑处理</el-button>
+        <el-button
+          :class="searchType == 0 ? 'el-button-focus' : ''"
+          @click="changeSearchType(0)"
+        >已审核待编辑处理</el-button>
         <el-button @click="changeSearchType(1)">已拒稿</el-button>
         <el-button @click="changeSearchType(2)">已录用</el-button>
       </div>
@@ -57,10 +60,20 @@
       <common-table :tableData="tableData" :tableOption.sync="tableOption" :isOperate="isOperate">
         <!-- 操作列，填充operate的插槽 -->
         <template slot="operate" slot-scope="scope">
-          <el-button v-if="searchType == 0 || searchType == 1"  type="primary" size="mini">查看</el-button>
+          <el-button v-if="searchType == 0 || searchType == 1" type="primary" size="mini">查看</el-button>
           <el-button v-if="searchType == 0" type="warning" size="mini" @click="approvalSection">编审</el-button>
-          <el-button v-if="searchType == 1 || searchType == 2" type="info" size="mini" @click="jumpPreview">预览</el-button>
-          <el-button v-if="searchType == 2" type="danger" size="mini" @click="downloadSection(scope.row)">下载</el-button>
+          <el-button
+            v-if="searchType == 1 || searchType == 2"
+            type="info"
+            size="mini"
+            @click="jumpPreview"
+          >预览</el-button>
+          <el-button
+            v-if="searchType == 2"
+            type="danger"
+            size="mini"
+            @click="downloadSection(scope.row)"
+          >下载</el-button>
         </template>
       </common-table>
     </el-card>
@@ -70,7 +83,7 @@
 
 <script>
 import commonTable from "../../components/table/common-table";
-import downloadsectionDialog from '../../components/dialog/downloadsection-dialog.vue';
+import downloadsectionDialog from "../../components/dialog/downloadsection-dialog.vue";
 export default {
   components: {
     commonTable,
@@ -79,7 +92,7 @@ export default {
   data() {
     return {
       // 0 已审核待编辑处理  1 已拒稿  2 已录用
-      searchType:0,
+      searchType: 0,
       value1: "",
       // 控制操作列是否显示
       isOperate: true,
@@ -140,31 +153,53 @@ export default {
         }
       ],
       // 需要下载的文章标题
-      sectionTitle:'',
+      sectionTitle: "",
       //下载提示框是否显示
-      ddialogvisible:false
+      ddialogvisible: false
     };
   },
   methods: {
-    changeSearchType(typeid){
+    changeSearchType(typeid) {
       this.searchType = typeid;
+      var status ="";
+      switch (typeid) {
+        case 0:
+          status ="APPROVE";
+          break;
+        case 1:
+          status ="REJECTION";
+          break;
+        case 2:
+          status ="HIRE";
+          break;
+        default:
+          break;
+      }
+      this.$axios.post("/edit/list.vpage",{
+        status:status,
+        size:10,
+        page:0
+      }).then(res=>{
+        console.log(res);
+        
+      })
     },
     // 点击稿件预览按钮
-    jumpPreview(){
-      this.$router.push('/preview-section')
+    jumpPreview() {
+      this.$router.push("/preview-section");
     },
     //点击审批稿件按钮
-    approvalSection(){
-      this.$router.push('/approval-section')
+    approvalSection() {
+      this.$router.push("/approval-section");
     },
     //下载稿件按钮
-    downloadSection(sectionInfo){
-            // 需要下载的文章标题
+    downloadSection(sectionInfo) {
+      // 需要下载的文章标题
       this.sectionTitle = sectionInfo.name;
       //下载提示框是否显示
       this.ddialogvisible = true;
     }
-  },
+  }
 };
 </script>
 
