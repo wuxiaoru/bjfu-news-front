@@ -48,6 +48,14 @@ const routes = [
         name: 'approve-state-info',
         component: () => import('../pages/approve/approve-state-info')
       },
+      {
+        path: '/user-list/:userType',
+        component: () => import('../pages/admin/userList.vue')
+      },
+      {
+        path: '/add-user/:userType',
+        component: () => import('../pages/admin/addUser.vue')
+      }
     ]
   },
   {
