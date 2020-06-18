@@ -4,7 +4,7 @@
       <el-form :model="manuscriptForm" :rules="rules" ref="manuscriptForm" label-width="100px">
         <!-- 稿件题目 -->
         <el-form-item label="稿件题目" prop="title">
-          <el-input v-model="manuscriptForm.title" placeholder="请输入文章标题"></el-input>
+          <el-input v-model="manuscriptForm.title" placeholder="请输入文章标题" disabled></el-input>
         </el-form-item>
         <!-- 稿件作者 -->
         <el-form-item label="稿件作者" prop="docAuthor">
@@ -41,8 +41,8 @@
               <el-upload
                 :action="fileURL"
                 :show-file-list="false"
-                multiple
                 :on-success="pictureSuccess"
+                multiple
                 accept="image/*"
               >
                 <el-button style="height:40px" size="small" type="primary">选择本地文件</el-button>
@@ -63,34 +63,26 @@
             <el-col :span="6">
               <el-button @click="resetForm('manuscriptForm')">取消</el-button>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" v-if="showSaveBtn">
               <el-button type="primary" @click="saveForm('manuscriptForm')">存为草稿</el-button>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="6" v-if="showSubmitBtn">
               <el-button type="success" @click="submitForm('manuscriptForm')">提交稿件</el-button>
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
-      <!-- 点击按钮弹出的对话框 -->
-      <common-dialog
-        :dialogTitle="dialogTitle"
-        :dialogVisible="dialogVisible"
-        :approvalForm="approvalForm"
-        @cancel="cancel"
-        @ok="ok"
-        @pushId="getId"
-      ></common-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
-import commonDialog from "../../components/dialog/common-dialog";
 export default {
   data() {
     return {
       manuscriptForm: {
+        // 稿件id
+        id: "",
         // 稿件题目
         title: "",
         // 稿件作者
@@ -101,10 +93,10 @@ export default {
         docTitle: "",
         // 图片作者
         picAuthor: "",
-        // 图片名称
-        picTitle: "",
         // 图片地址
         picUrl: "",
+        // 图片名称
+        picTitle: "",
         // 备注
         note: "",
         // 投稿人id
@@ -119,24 +111,17 @@ export default {
         ],
         docUrl: [{ required: true, message: "请上传稿件", trigger: "blur" }]
       },
-      // 对话框标题
-      dialogTitle: "",
-      // 控制 对话框 是否显示
-      dialogVisible: false,
-      // 对话框显示内容
-      approvalForm: [],
-      // 审批人列表
-      approvalList: [],
       // 上传的文件地址
       fileURL: process.env.VUE_APP_Back + "/v1/contribution/upload.vpage",
+      // 控制保存草稿的按钮是否显示
+      showSaveBtn: true,
+      // 控制提交稿件的按钮是否显示
+      showSubmitBtn: true,
       // 临时存储上传的图片地址
       picUrlTmp: [],
       // 临时存储上传的图片名称
       picTitleTmp: []
     };
-  },
-  components: {
-    commonDialog
   },
   methods: {
     // 上传文件成功后的回调函数
@@ -148,7 +133,6 @@ export default {
     pictureSuccess(response, file, fileList) {
       if (response.success == true) {
         this.picUrlTmp.push(response.data.toString());
-        // 从后台返回的数据中截取文档名称
         this.picTitleTmp.push(
           response.data
             .toString()
@@ -158,47 +142,25 @@ export default {
       this.manuscriptForm.picUrl = this.picUrlTmp.join(",");
       this.manuscriptForm.picTitle = this.picTitleTmp.join(",");
     },
-    // 新建文章点击提交稿件时 先判断验证是否通过 然后弹出对话框 选择审批人
+    // 点击提交稿件时 先判断验证是否通过 验证通过 提交稿件
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // 获取所有的审批人列表
-          this.getApproveList();
-          // 弹出的对话框的标题
-          this.dialogTitle = "选择审批人";
-          // 让对话框显示
-          this.dialogVisible = true;
-          // 如果对话框里面有内容，先清空
-          if (this.approvalForm.length != 0) {
-            this.approvalForm.splice(0, this.approvalForm.length);
-          }
-          this.approvalForm.push(
-            {
-              type: "input",
-              label: "稿件题目",
-              title: this.manuscriptForm.title
-            },
-            {
-              type: "select",
-              label: "选择审稿人",
-              approval: "",
-              option:
-                // this.approvalList
-                [{ name: "测试hhh", id: "9" }]
-            }
-          );
+          // 发起提交稿件的请求
+          this.$axios
+            .post("/v1/contribution/reSubmit.vpage", this.manuscriptForm)
+            .then(res => {
+              if (res.success == true) {
+                // 稿件提交成功，跳转回稿件列表界面
+                this.$router.push("/news-list");
+              } else {
+                this.$message.error("提交失败，请稍后再试");
+              }
+            });
         } else {
           return false;
         }
       });
-    },
-    // 获取审批人列表
-    getApproveList() {
-      this.$axios
-        .get("/v1/contribution/approve/list.vpage?userId" + this.userId)
-        .then(res => {
-          this.approvalList = res.data;
-        });
     },
     // 存为草稿
     saveForm(formName) {
@@ -206,7 +168,7 @@ export default {
         if (valid) {
           // 表单验证通过 发起存为草稿的请求
           this.$axios
-            .post("/v1/contribution/draft.vpage", this.manuscriptForm)
+            .post("/v1/contribution/edit.vpage", this.manuscriptForm)
             .then(res => {
               if (res.success == true) {
                 // 稿件保存成功，跳转回稿件列表界面
@@ -218,36 +180,53 @@ export default {
         }
       });
     },
+    // 根据稿件id查询稿件的详细信息
+    scanDetail(id) {
+      this.$axios.get("/v1/contribution/detail.vpage?id=" + id).then(res => {
+        if (res.success == true) {
+          // 从后端返回的数据中拿出自己需要的数据
+          this.manuscriptForm.title = res.data.title;
+          this.manuscriptForm.docAuthor = res.data.docAuthor;
+          this.manuscriptForm.docUrl = res.data.docUrl;
+          // 从后台返回的数据中截取文档名称
+          this.manuscriptForm.docTitle = res.data.docUrl.substring(
+            res.data.docUrl.lastIndexOf("/") + 1
+          );
+          this.manuscriptForm.picAuthor = res.data.picAuthor;
+          this.manuscriptForm.picUrl = res.data.picUrl;
+          // 从后台返回的数据中截取图片名称 因为图片可能会有多张
+          const picURLArray = res.data.picUrl.split(",");
+          const picTitleArray = [];
+          for (let i = 0; i < picURLArray.length; i++) {
+            picTitleArray.push(
+              picURLArray[i].substring(picURLArray[i].lastIndexOf("/") + 1)
+            );
+          }
+          this.manuscriptForm.picTitle = picTitleArray.join(",");
+          this.manuscriptForm.note = res.data.note;
+        }
+      });
+    },
     // 点击取消时 清空表单数据 跳转回稿件列表界面
     resetForm(formName) {
       this.$refs[formName].resetFields();
       this.$router.push("/news-list");
-    },
-    // 对话框点击取消按钮时
-    cancel() {
-      this.dialogVisible = false;
-      console.log(this.dialogVisible);
-    },
-    // 对话框点击确认按钮时
-    ok() {
-      // 对话框消失 发送提交稿件的请求
-      this.dialogVisible = false;
-      console.log(this.manuscriptForm);
-      this.$axios
-        .post("/v1/contribution/submit.vpage", this.manuscriptForm)
-        .then(res => {
-          if (res.success == true) {
-            // 新建稿件成功，跳转回稿件列表界面
-            this.$router.push("/news-list");
-          } else {
-            this.$message.error("提交失败，请稍后再试");
-          }
-        });
-    },
-    // 获取选择审批人
-    getId(id) {
-      this.manuscriptForm.approveId = id;
-      console.log(id);
+    }
+  },
+  created() {
+    console.log(this.$route.params.id);
+    console.log(this.$route.params.status);
+
+    // 如果有路由传参，证明是点编辑按钮跳转过来的，需要去查稿件的详细信息
+    if (this.$route.params.id !== undefined) {
+      this.scanDetail(this.$route.params.id);
+      this.manuscriptForm.id = this.$route.params.id;
+    }
+
+    if (this.$route.params.status === "草稿") {
+      this.showSubmitBtn = false;
+    } else if (this.$route.params.status === "审稿不过待修改") {
+      this.showSaveBtn = false;
     }
   }
 };

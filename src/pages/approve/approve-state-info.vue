@@ -211,44 +211,42 @@ export default {
     },
     // 查看稿件详细状态信息
     scanDetail(id) {
-      this.$axios
-        .get(process.env.VUE_APP_Contribution + "/detail.vpage?id=" + id)
-        .then(res => {
-          if (res.success == true) {
-            // 从后端返回的数据中拿出自己需要的数据
-            this.nowState = JSON.parse(
-              JSON.stringify(res.data, [
-                "title",
-                "approveName",
-                "editorName",
-                "docAuthor",
-                "submitTime",
-                "approveTime",
-                "editTime",
-                "status",
-                "approveSuggestion",
-                "editSuggestion"
-              ])
-            );
-            this.tableData = res.data.logList;
-            this.tableData.map(item => {
-              if (item.status == "DRAFT") {
-                item.status = "草稿";
-              } else if (item.status == "APPROVAL_PENDING") {
-                item.status = "待审批";
-              } else if (item.status == "APPROVE") {
-                item.status = "审批通过等待编辑部处理";
-              } else if (item.status == "APPROVAL_REJECTION") {
-                item.status = "审批不过待修改";
-              } else if (item.status == "HIRE") {
-                item.status = "编辑部已录用";
-              } else {
-                item.status == "编辑部已拒稿";
-              }
-              return item;
-            });
-          }
-        });
+      this.$axios.get("/v1/contribution/detail.vpage?id=" + id).then(res => {
+        if (res.success == true) {
+          // 从后端返回的数据中拿出自己需要的数据
+          this.nowState = JSON.parse(
+            JSON.stringify(res.data, [
+              "title",
+              "approveName",
+              "editorName",
+              "docAuthor",
+              "submitTime",
+              "approveTime",
+              "editTime",
+              "status",
+              "approveSuggestion",
+              "editSuggestion"
+            ])
+          );
+          this.tableData = res.data.logList;
+          this.tableData.map(item => {
+            if (item.status == "DRAFT") {
+              item.status = "草稿";
+            } else if (item.status == "APPROVAL_PENDING") {
+              item.status = "待审批";
+            } else if (item.status == "APPROVE") {
+              item.status = "审批通过等待编辑部处理";
+            } else if (item.status == "APPROVAL_REJECTION") {
+              item.status = "审批不过待修改";
+            } else if (item.status == "HIRE") {
+              item.status = "编辑部已录用";
+            } else {
+              item.status == "编辑部已拒稿";
+            }
+            return item;
+          });
+        }
+      });
     }
   },
   created() {

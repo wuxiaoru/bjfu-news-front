@@ -62,10 +62,15 @@
             type="warning"
             size="mini"
             v-if="scope.row.status == '待审批' || scope.row.status == '重投待审稿'"
-            @click="editNews(scope.row)"
+            @click="approveNews(scope.row)"
           >审稿</el-button>
           <!-- 草稿 的可以删除 -->
-          <el-button type="danger" size="mini" v-else-if="scope.row.status == '审批通过等待编辑部处理'">撤回</el-button>
+          <el-button
+            type="danger"
+            size="mini"
+            v-else-if="scope.row.status == '审批通过等待编辑部处理'"
+            @click="recallNews(scope.row)"
+          >撤回</el-button>
           <!-- 待审批 的可以撤回 -->
           <el-button type="primary" size="mini" v-else>追加</el-button>
         </template>
@@ -194,25 +199,23 @@ export default {
         params: { id: row.id }
       });
     },
-    // 获取所有的稿件状态
-    getAllState() {
-      this.$axios.get(process.env.VUE_APP_Enum + "/enum.vpage").then(res => {
-        console.log(res);
-        // this.stateList = res.status
-        var test = {
-          DRAFT: "草稿",
-
-          APPROVAL_PENDING: "待审批",
-
-          APPROVE: "审批通过等待编辑部处理",
-
-          APPROVAL_REJECTION: "审批不过待修改",
-
-          HIRE: "编辑部已录用",
-
-          REJECTION: "编辑部已拒稿"
-        };
-        console.log(Object.assign(test));
+    // 点击审稿按钮触发的事件,跳转预览稿件的界面
+    approveNews(row) {
+      this.$router.push("/approve-perview-news/" + row.id);
+    },
+    // 点击撤回按钮时触发的事件
+    recallNews(row) {
+      this.dialogTitle = "撤回稿件确认";
+      this.dialogVisible = true;
+      this.id = row.id;
+      // 如果对话框里面有内容，先清空
+      if (this.approvalForm.length != 0) {
+        this.approvalForm.splice(0, this.approvalForm.length);
+      }
+      this.approvalForm.push({
+        type: "input",
+        label: "稿件题目",
+        title: row.title
       });
     },
     // 监听页大小的变化

@@ -84,7 +84,7 @@
       ></el-pagination>
     </el-card>
     <!-- 意见弹出框 -->
-    <el-dialog title="审批意见" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
       <span>{{suggestion}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -123,22 +123,7 @@ export default {
           "我是编辑意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的"
       },
       // 表格数据
-      tableData: [
-        {
-          operateTime: "2016-05-02 11:31:17",
-          operateName: "张老师",
-          status: "编辑部已录用",
-          docAuthor: "你猜我猜不猜.doc",
-          suggestion: "暂无"
-        },
-        {
-          operateTime: "2020-06-09 16:26:47",
-          operateName: "郝老师",
-          status: "审批通过待编辑部处理",
-          docAuthor: "我不猜.doc",
-          suggestion: "暂无"
-        }
-      ],
+      tableData: [],
       // 表格操作
       tableOption: [
         {
@@ -183,7 +168,9 @@ export default {
         APPROVAL_REJECTION: "审稿不过待修改",
         HIRE: "编辑部已录用",
         REJECTION: "编辑部已拒稿"
-      }
+      },
+      // 弹出的对话框的名称
+      dialogTitle: ""
     };
   },
   components: {
@@ -203,36 +190,37 @@ export default {
     },
     // 查看审批意见
     scanApprove() {
+      this.dialogTitle = "审批意见";
       this.suggestion = this.nowState.approveSuggestion;
       this.dialogVisible = true;
     },
     // 查看编辑意见
     scanedit() {
+      this.dialogTitle = "编辑意见";
       this.suggestion = this.nowState.editSuggestion;
       this.dialogVisible = true;
     },
     // 查看稿件详细状态信息
     scanDetail(id) {
-      this.$axios
-        .get(process.env.VUE_APP_Contribution + "/detail.vpage?id=" + id)
-        .then(res => {
-          if (res.success == true) {
-            // 从后端返回的数据中拿出自己需要的数据
-            this.nowState = JSON.parse(
-              JSON.stringify(res.data, [
-                "title",
-                "approveName",
-                "editorName",
-                "docAuthor",
-                "submitTime",
-                "approveTime",
-                "editTime",
-                "status",
-                "approveSuggestion",
-                "editSuggestion"
-              ])
-            );
-            this.tableData = res.data.logList;
+      this.$axios.get("/v1/contribution/detail.vpage?id=" + id).then(res => {
+        if (res.success == true) {
+          // 从后端返回的数据中拿出自己需要的数据
+          this.nowState = JSON.parse(
+            JSON.stringify(res.data, [
+              "title",
+              "approveName",
+              "editorName",
+              "docAuthor",
+              "submitTime",
+              "approveTime",
+              "editTime",
+              "status",
+              "approveSuggestion",
+              "editSuggestion"
+            ])
+          );
+          this.tableData = res.data.logList;
+          if (this.tableData != null) {
             this.tableData.map(item => {
               if (item.status == "DRAFT") {
                 item.status = "草稿";
@@ -252,7 +240,9 @@ export default {
               return item;
             });
           }
-        });
+          this.total = this.tableData.length;
+        }
+      });
     }
   },
   created() {

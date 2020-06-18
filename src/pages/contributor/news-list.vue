@@ -201,7 +201,7 @@ export default {
       // 查询表格的条件信息
       queryInfo: {
         query: "",
-        pagenum: 0,
+        pagenum: 1,
         pagesize: 10
       },
       // 总数量
@@ -268,7 +268,12 @@ export default {
     },
     // 点击编辑按钮时触发的事件
     editNews(row) {
-      this.$router.push("/add-manuscript");
+      console.log(row);
+
+      this.$router.push({
+        name: "edit-manuscript",
+        params: { id: row.id, status: row.status }
+      });
     },
     // 点击删除按钮时触发的事件
     deleteNews(row) {
@@ -324,8 +329,7 @@ export default {
     submit() {
       this.$axios
         .post(
-          process.env.VUE_APP_Contribution +
-            "/fast-submit.vpage?id=" +
+          "/v1/contribution/fast-submit.vpage?id=" +
             this.id +
             "&approveId=" +
             this.approvalForm.approval
@@ -342,7 +346,7 @@ export default {
     // 删除稿件
     delete() {
       this.$axios
-        .post(process.env.VUE_APP_Contribution + "/delete.vpage?id=" + this.id)
+        .post("/v1/contribution/delete.vpage?id=" + this.id)
         .then(res => {
           if (res.success == true) {
             // 稿件删除成功，重新调用获取稿件列表的接口
@@ -355,9 +359,7 @@ export default {
     // 撤回稿件
     recall() {
       this.$axios
-        .post(
-          process.env.VUE_APP_Contribution + "/withDraw.vpage?id=" + this.id
-        )
+        .post("/v1/contribution/withDraw.vpage?id=" + this.id)
         .then(res => {
           if (res.success == true) {
             // 稿件撤回成功，重新调用获取稿件列表的接口
@@ -383,42 +385,36 @@ export default {
         size: this.queryInfo.pagesize,
         page: this.queryInfo.pagenum
       };
-      this.$axios
-        .post(process.env.VUE_APP_Contribution + "/list.vpage", body)
-        .then(res => {
-          console.log(res);
-          if (res.success == true) {
-            this.tableData = res.data.list;
-            this.tableData.map(item => {
-              if (item.status == "DRAFT") {
-                item.status = "草稿";
-              } else if (item.status == "APPROVAL_PENDING") {
-                item.status = "待审稿";
-              } else if (item.status == "RE_APPROVAL_PENDING") {
-                item.status = "重投待审稿";
-              } else if (item.status == "APPROVE") {
-                item.status = "审稿通过等待编辑部处理";
-              } else if (item.status == "APPROVAL_REJECTION") {
-                item.status = "审稿不过待修改";
-              } else if (item.status == "HIRE") {
-                item.status = "编辑部已录用";
-              } else {
-                item.status = "编辑部已拒稿";
-              }
-              return item;
-            });
-            this.total = res.data.totalCount;
-          }
-        });
+      this.$axios.post("/v1/contribution/list.vpage", body).then(res => {
+        console.log(res);
+        if (res.success == true) {
+          this.tableData = res.data.list;
+          this.tableData.map(item => {
+            if (item.status == "DRAFT") {
+              item.status = "草稿";
+            } else if (item.status == "APPROVAL_PENDING") {
+              item.status = "待审稿";
+            } else if (item.status == "RE_APPROVAL_PENDING") {
+              item.status = "重投待审稿";
+            } else if (item.status == "APPROVE") {
+              item.status = "审稿通过等待编辑部处理";
+            } else if (item.status == "APPROVAL_REJECTION") {
+              item.status = "审稿不过待修改";
+            } else if (item.status == "HIRE") {
+              item.status = "编辑部已录用";
+            } else {
+              item.status = "编辑部已拒稿";
+            }
+            return item;
+          });
+          this.total = res.data.totalCount;
+        }
+      });
     },
     // 获取所有的审稿人列表
     getApproveList() {
       this.$axios
-        .get(
-          process.env.VUE_APP_Contribution +
-            "/approve/list.vpage?userId=" +
-            this.userId
-        )
+        .get("/v1/contribution/approve/list.vpage?userId=" + this.userId)
         .then(res => {
           if (res.success == true) {
             this.approveList = res.data;
