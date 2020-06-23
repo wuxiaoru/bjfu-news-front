@@ -22,7 +22,13 @@ const routes = [
         component: () => import('../pages/editor/section-list.vue')
       },
       {
+        path: '/section-info',
+        name:'section-info',
+        component: () => import('../pages/editor/section-info.vue')
+      },
+      {
         path: '/preview-section',
+        name:'preview-section',
         component: () => import('../pages/editor/preview-section.vue')
       },
       {

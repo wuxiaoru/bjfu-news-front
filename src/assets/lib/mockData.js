@@ -55,7 +55,7 @@ const navData = [{
       {
         "id": 113,
         "authName": "预览稿件",
-        "path": null,
+        "path": 'preview-section',
         "children": []
       }
     ]

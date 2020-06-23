@@ -7,14 +7,14 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="活动区域" prop="region">
-        <el-select v-model="ruleForm.region" placeholder="请选择活动区域">
-          <el-option label="通过" value="shanghai"></el-option>
-          <el-option label="不通过" value="beijing"></el-option>
+      <el-form-item label="审批结果" prop="result">
+        <el-select v-model="ruleForm.result" placeholder="请选择审批结果">
+          <el-option label="通过" value="HIRE"></el-option>
+          <el-option label="不通过" value="REJECTION"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="活动形式" prop="desc">
-        <el-input :rows="4" type="textarea" v-model="ruleForm.desc"></el-input>
+      <el-form-item label="审批意见" prop="suggestion">
+        <el-input :rows="4" type="textarea" v-model="ruleForm.suggestion"></el-input>
       </el-form-item>
       <el-form-item class="buttonArea">
         <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
@@ -29,20 +29,16 @@ export default {
   data() {
     return {
       ruleForm: {
-        name: "",
-        region: "",
-        date1: "",
-        date2: "",
-        delivery: false,
-        type: [],
-        resource: "",
-        desc: ""
+        result:"",
+        suggestion:""
       },
       rules: {
-        region: [
-          { required: true, message: "请选择活动区域", trigger: "change" }
+        result: [
+          { required: true, message: "请选择审批结果", trigger: "change" }
         ],
-        desc: [{ required: true, message: "请填写活动形式", trigger: "blur" }]
+        suggestion: [
+          { required: true, message: "请填写意见", trigger: "blur" }
+        ]
       }
     };
   },

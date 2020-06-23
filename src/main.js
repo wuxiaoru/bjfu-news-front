@@ -13,6 +13,9 @@ Vue.use(ElementUI);
 import './assets/css/global.css'
 // 全局注册加载提示的组件
 import loading from './components/loading/loading'
+//引入pdf预览插件
+import pdf from 'pdfobject'
+Vue.prototype.$pdf = pdf
 Vue.component('loading', loading)
 
 Vue.config.productionTip = false
