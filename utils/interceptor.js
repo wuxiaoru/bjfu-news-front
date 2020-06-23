@@ -6,7 +6,7 @@ import store from '../src/store'
 import router from '../src/router'
 
 // 配置默认的请求地址头
-axios.defaults.baseURL = process.env.baseURL
+axios.defaults.baseURL = process.env.VUE_APP_Back
 
 // 全局添加拦截器的作用是可以在每个API前面加上headers的token验证
 axios.interceptors.request.use(config => {

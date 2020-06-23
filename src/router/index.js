@@ -41,6 +41,11 @@ const routes = [
         component: () => import('../pages/contributor/add-manuscript')
       },
       {
+        path: '/edit-manuscript',
+        name: 'edit-manuscript',
+        component: () => import('../pages/contributor/edit-manuscript')
+      },
+      {
         path: '/state-info',
         name: 'state-info',
         component: () => import('../pages/contributor/state-info')
@@ -53,6 +58,15 @@ const routes = [
         path: '/approve-state-info',
         name: 'approve-state-info',
         component: () => import('../pages/approve/approve-state-info')
+      },
+      {
+        path: '/approve-suggestion/:id',
+        name: 'approve-suggestion',
+        component: () => import('../pages/approve/approve-suggestion')
+      },
+      {
+        path: '/approve-perview-news',
+        component: () => import('../pages/approve/approve-perview-news')
       },
       {
         path: '/user-list/:userType',

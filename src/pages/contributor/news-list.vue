@@ -45,6 +45,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" style="text-align: center">
+            <el-button type="info" @click="clear">清空</el-button>
             <el-button type="primary" @click="queryList">搜索</el-button>
           </el-col>
         </el-row>
@@ -147,29 +148,7 @@ export default {
         { label: "编辑部已拒稿", value: "REJECTION" }
       ],
       // 表格数据
-      tableData: [
-        {
-          id: 1,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-06 23:58:49"
-        },
-        {
-          id: 2,
-          title: "林业信息拉萨解放了书法家",
-          status: "DRAFT",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-07 00:10:59"
-        },
-        {
-          id: 6,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-11 08:07:26"
-        }
-      ],
+      tableData: [],
       // 表格操作
       tableOption: [
         {
@@ -201,7 +180,7 @@ export default {
       // 查询表格的条件信息
       queryInfo: {
         query: "",
-        pagenum: 0,
+        pagenum: 1,
         pagesize: 10
       },
       // 总数量
@@ -243,8 +222,8 @@ export default {
     // 点击查看按钮触发的事件
     scanNews(row) {
       this.$router.push({
-        name: "state-info",
-        params: { id: row.id }
+        path: "/state-info",
+        query: { id: row.id }
       });
     },
     // 点击提交按钮时触发的事件
@@ -268,7 +247,12 @@ export default {
     },
     // 点击编辑按钮时触发的事件
     editNews(row) {
-      this.$router.push("/add-manuscript");
+      console.log(row);
+
+      this.$router.push({
+        name: "edit-manuscript",
+        params: { id: row.id, status: row.status }
+      });
     },
     // 点击删除按钮时触发的事件
     deleteNews(row) {
@@ -324,8 +308,7 @@ export default {
     submit() {
       this.$axios
         .post(
-          process.env.VUE_APP_Contribution +
-            "/fast-submit.vpage?id=" +
+          "/v1/contribution/fast-submit.vpage?id=" +
             this.id +
             "&approveId=" +
             this.approvalForm.approval
@@ -342,7 +325,7 @@ export default {
     // 删除稿件
     delete() {
       this.$axios
-        .post(process.env.VUE_APP_Contribution + "/delete.vpage?id=" + this.id)
+        .post("/v1/contribution/delete.vpage?id=" + this.id)
         .then(res => {
           if (res.success == true) {
             // 稿件删除成功，重新调用获取稿件列表的接口
@@ -355,9 +338,7 @@ export default {
     // 撤回稿件
     recall() {
       this.$axios
-        .post(
-          process.env.VUE_APP_Contribution + "/withDraw.vpage?id=" + this.id
-        )
+        .post("/v1/contribution/withDraw.vpage?id=" + this.id)
         .then(res => {
           if (res.success == true) {
             // 稿件撤回成功，重新调用获取稿件列表的接口
@@ -373,6 +354,9 @@ export default {
     },
     // 查询所有稿件列表
     queryList() {
+      if (this.searchForm.date == null) {
+        this.searchForm.date = [];
+      }
       const body = {
         userId: this.userId,
         docAuthor: this.searchForm.docAuthor,
@@ -383,50 +367,52 @@ export default {
         size: this.queryInfo.pagesize,
         page: this.queryInfo.pagenum
       };
-      this.$axios
-        .post(process.env.VUE_APP_Contribution + "/list.vpage", body)
-        .then(res => {
-          console.log(res);
-          if (res.success == true) {
-            this.tableData = res.data.list;
-            this.tableData.map(item => {
-              if (item.status == "DRAFT") {
-                item.status = "草稿";
-              } else if (item.status == "APPROVAL_PENDING") {
-                item.status = "待审稿";
-              } else if (item.status == "RE_APPROVAL_PENDING") {
-                item.status = "重投待审稿";
-              } else if (item.status == "APPROVE") {
-                item.status = "审稿通过等待编辑部处理";
-              } else if (item.status == "APPROVAL_REJECTION") {
-                item.status = "审稿不过待修改";
-              } else if (item.status == "HIRE") {
-                item.status = "编辑部已录用";
-              } else {
-                item.status = "编辑部已拒稿";
-              }
-              return item;
-            });
-            this.total = res.data.totalCount;
-          }
-        });
+      this.$axios.post("/v1/contribution/list.vpage", body).then(res => {
+        console.log(res);
+        if (res.success == true) {
+          this.tableData = res.data.list;
+          this.tableData.map(item => {
+            if (item.status == "DRAFT") {
+              item.status = "草稿";
+            } else if (item.status == "APPROVAL_PENDING") {
+              item.status = "待审稿";
+            } else if (item.status == "RE_APPROVAL_PENDING") {
+              item.status = "重投待审稿";
+            } else if (item.status == "APPROVE") {
+              item.status = "审稿通过等待编辑部处理";
+            } else if (item.status == "APPROVAL_REJECTION") {
+              item.status = "审稿不过待修改";
+            } else if (item.status == "HIRE") {
+              item.status = "编辑部已录用";
+            } else {
+              item.status = "编辑部已拒稿";
+            }
+            return item;
+          });
+          this.total = res.data.totalCount;
+        }
+      });
     },
     // 获取所有的审稿人列表
     getApproveList() {
       this.$axios
-        .get(
-          process.env.VUE_APP_Contribution +
-            "/approve/list.vpage?userId=" +
-            this.userId
-        )
+        .get("/v1/contribution/approve/list.vpage?userId=" + this.userId)
         .then(res => {
           if (res.success == true) {
             this.approveList = res.data;
           }
         });
+    },
+    // 清空搜索内容
+    clear() {
+      (this.searchForm.title = ""),
+        (this.searchForm.docAuthor = ""),
+        (this.searchForm.status = null),
+        (this.searchForm.date = []);
     }
   },
   async created() {
+    // this.userId = localStorage.getItem("userId");
     await this.queryList();
     this.getApproveList();
   }
