@@ -45,7 +45,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" style="text-align: center">
-            <el-button type="primary">搜索</el-button>
+            <el-button type="info" @click="clear">清空</el-button>
+            <el-button type="primary" @click="queryList">搜索</el-button>
           </el-col>
         </el-row>
       </el-form>
@@ -57,22 +58,22 @@
         <template slot="operate" slot-scope="scope">
           <!-- 所有的状态都有查看的操作 -->
           <el-button type="primary" size="mini" @click="scanNews(scope.row)">查看</el-button>
-          <!-- 草稿 审批不过待修改 可以进行编辑 -->
+          <!-- 待审稿 重投待审稿 可以进行审稿 -->
           <el-button
             type="warning"
             size="mini"
-            v-if="scope.row.status == '待审批' || scope.row.status == '重投待审稿'"
+            v-if="scope.row.status == '待审稿' || scope.row.status == '重投待审稿'"
             @click="approveNews(scope.row)"
           >审稿</el-button>
-          <!-- 草稿 的可以删除 -->
+          <!-- 审批通过等待编辑部处理 的可以撤回 -->
           <el-button
             type="danger"
             size="mini"
             v-else-if="scope.row.status == '审批通过等待编辑部处理'"
             @click="recallNews(scope.row)"
           >撤回</el-button>
-          <!-- 待审批 的可以撤回 -->
-          <el-button type="primary" size="mini" v-else>追加</el-button>
+          <!-- 审批不过待修改 的可以追加 -->
+          <el-button type="primary" size="mini" v-else @click="appendNews(scope.row)">追加</el-button>
         </template>
       </common-table>
       <!-- 分页区域 -->
@@ -107,38 +108,16 @@ export default {
       // 搜索表单的内容
       searchForm: {
         // 文章标题
-        title: "测试",
+        title: "",
         // 作者姓名
-        docAuthor: "zhangsan",
+        docAuthor: "",
         // 稿件状态
-        status: "DRAFT",
+        status: null,
         // 提交日期
-        date: ["2020-06-11 00:00:00", "2020-07-05 23:59:59"]
+        date: []
       },
       // 表格数据
-      tableData: [
-        {
-          id: 1,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-06 23:58:49"
-        },
-        {
-          id: 2,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVE",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-07 00:10:59"
-        },
-        {
-          id: 6,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_REJECTION",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-11 08:07:26"
-        }
-      ],
+      tableData: [],
       // 表格操作
       tableOption: [
         {
@@ -164,11 +143,11 @@ export default {
       isOperate: true,
       // 稿件状态选择项
       stateList: [
-        { label: "全部", value: "0" },
-        { label: "草稿", value: "1" },
-        { label: "待审稿", value: "2" },
-        { label: "重投待审稿", value: "3" },
-        { label: "审批不过待修改", value: "4" }
+        { label: "全部", value: null },
+        { label: "待审稿", value: "APPROVAL_PENDING" },
+        { label: "重投待审稿", value: "RE_APPROVAL_PENDING" },
+        { label: "审稿通过等待编辑部处理", value: "APPROVE" },
+        { label: "审稿不过待修改", value: "APPROVAL_REJECTION" }
       ],
       // 查询表格的条件信息
       queryInfo: {
@@ -183,7 +162,11 @@ export default {
       // 控制 对话框 是否显示
       dialogVisible: false,
       // 对话框显示内容
-      approvalForm: []
+      approvalForm: [],
+      // 登录的用户id
+      userId: 1,
+      // 撤回稿件的id
+      id: ""
     };
   },
   // 注册组件
@@ -192,16 +175,54 @@ export default {
     commonDialog
   },
   methods: {
+    // 界面加载完成后查询所有的稿件列表
+    queryList() {
+      if (this.searchForm.date == null) {
+        this.searchForm.date = [];
+      }
+      const body = {
+        userId: this.userId,
+        docAuthor: this.searchForm.docAuthor,
+        title: this.searchForm.title,
+        status: this.searchForm.status,
+        startTime: this.searchForm.date[0],
+        endTime: this.searchForm.date[1],
+        size: this.queryInfo.pagesize,
+        page: this.queryInfo.pagenum
+      };
+      this.$axios.post("/v1/approve/list.vpage", body).then(res => {
+        console.log(res);
+        if (res.success == true) {
+          this.tableData = res.data.list;
+          this.tableData.map(item => {
+            if (item.status == "APPROVAL_PENDING") {
+              item.status = "待审稿";
+            } else if (item.status == "RE_APPROVAL_PENDING") {
+              item.status = "重投待审稿";
+            } else if (item.status == "APPROVE") {
+              item.status = "审批通过等待编辑部处理";
+            } else if (item.status == "APPROVAL_REJECTION") {
+              item.status = "审批不过待修改";
+            }
+            return item;
+          });
+          this.total = res.data.totalCount;
+        }
+      });
+    },
     // 点击查看按钮触发的事件
     scanNews(row) {
       this.$router.push({
-        name: "approve-state-info",
-        params: { id: row.id }
+        path: "/approve-state-info",
+        query: { id: row.id }
       });
     },
     // 点击审稿按钮触发的事件,跳转预览稿件的界面
     approveNews(row) {
-      this.$router.push("/approve-perview-news/" + row.id);
+      localStorage.setItem("newsId", row.id);
+      localStorage.setItem("state", "approve");
+      localStorage.setItem("title", row.title);
+      this.$router.push("/approve-perview-news");
     },
     // 点击撤回按钮时触发的事件
     recallNews(row) {
@@ -218,35 +239,52 @@ export default {
         title: row.title
       });
     },
+    // 追加意见
+    appendNews(row) {
+      localStorage.setItem("newsId", row.id);
+      localStorage.setItem("state", "append");
+      localStorage.setItem("title", row.title);
+      this.$router.push("/approve-perview-news");
+    },
     // 监听页大小的变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;
+      this.queryList();
     },
     // 监听页数的变化
     handleCurrentChange(newCurrent) {
       this.queryInfo.pagenum = newCurrent;
+      this.queryList();
     },
     cancel() {
+      this.dialogVisible = false;
       console.log("用户点击了退出");
     },
     ok() {
-      console.log("用户点击了OK");
+      this.dialogVisible = false;
+      // 用户点击了撤回，需要撤回稿件
+      this.$axios.post("/v1/approve/withDraw.vpage?id=" + this.id).then(res => {
+        if (res.success == true) {
+          // 撤回稿件成功，重新查询所有稿件
+          this.queryList();
+        } else {
+          this.$message.error("撤回稿件失败，请稍后再试");
+        }
+      });
     },
     getId() {
       console.log("我要获取id了");
+    },
+    clear() {
+      (this.searchForm.title = ""),
+        (this.searchForm.docAuthor = ""),
+        (this.searchForm.status = null),
+        (this.searchForm.date = []);
     }
   },
   created() {
-    this.tableData.map(item => {
-      if (item.status == "APPROVAL_PENDING") {
-        item.status = "待审批";
-      } else if (item.status == "APPROVE") {
-        item.status = "审批通过等待编辑部处理";
-      } else if (item.status == "APPROVAL_REJECTION") {
-        item.status = "审批不过待修改";
-      }
-      return item;
-    });
+    // this.userId = localStorage.getItem("approveId");
+    this.queryList();
   }
 };
 </script>

@@ -8,17 +8,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件题目">
-              <el-input v-model="nowState.title"></el-input>
+              <el-input v-model="nowState.title" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审稿人">
-              <el-input v-model="nowState.approveName"></el-input>
+              <el-input v-model="nowState.approveName" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑人">
-              <el-input v-model="nowState.editorName"></el-input>
+              <el-input v-model="nowState.editorName" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -26,7 +26,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="作者">
-              <el-input v-model="nowState.docAuthor"></el-input>
+              <el-input v-model="nowState.docAuthor" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -44,17 +44,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="提交时间">
-              <el-input v-model="nowState.submitTime"></el-input>
+              <el-input v-model="nowState.submitTime" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审批时间">
-              <el-input v-model="nowState.approveTime"></el-input>
+              <el-input v-model="nowState.approveTime" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑时间">
-              <el-input v-model="nowState.editTime"></el-input>
+              <el-input v-model="nowState.editTime" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -62,7 +62,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件状态">
-              <el-input v-model="nowState.status"></el-input>
+              <el-input v-model="status[nowState.status]" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -181,7 +181,13 @@ export default {
       // 控制意见弹出框是否显示
       dialogVisible: false,
       // 显示在界面上的意见
-      suggestion: ""
+      suggestion: "",
+      status: {
+        APPROVAL_PENDING: "待审稿",
+        RE_APPROVAL_PENDING: "重投待审稿",
+        APPROVE: "审稿通过等待编辑部处理",
+        APPROVAL_REJECTION: "审稿不过待修改"
+      }
     };
   },
   components: {
@@ -194,10 +200,12 @@ export default {
     // 监听页大小的变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;
+      this.scanDetail(this.$route.query.id);
     },
     // 监听页数的变化
     handleCurrentChange(newCurrent) {
       this.queryInfo.pagenum = newCurrent;
+      this.scanDetail(this.$route.query.id);
     },
     // 查看审批意见
     scanApprove() {
@@ -213,6 +221,8 @@ export default {
     scanDetail(id) {
       this.$axios.get("/v1/contribution/detail.vpage?id=" + id).then(res => {
         if (res.success == true) {
+          console.log(res.data);
+
           // 从后端返回的数据中拿出自己需要的数据
           this.nowState = JSON.parse(
             JSON.stringify(res.data, [
@@ -229,29 +239,33 @@ export default {
             ])
           );
           this.tableData = res.data.logList;
-          this.tableData.map(item => {
-            if (item.status == "DRAFT") {
-              item.status = "草稿";
-            } else if (item.status == "APPROVAL_PENDING") {
-              item.status = "待审批";
-            } else if (item.status == "APPROVE") {
-              item.status = "审批通过等待编辑部处理";
-            } else if (item.status == "APPROVAL_REJECTION") {
-              item.status = "审批不过待修改";
-            } else if (item.status == "HIRE") {
-              item.status = "编辑部已录用";
-            } else {
-              item.status == "编辑部已拒稿";
-            }
-            return item;
-          });
+          if (this.tableData != null) {
+            this.tableData.map(item => {
+              if (item.status == "APPROVAL_PENDING") {
+                item.status = "待审稿";
+              } else if (item.status == "RE_APPROVAL_PENDING") {
+                item.status = "重投待审稿";
+              } else if (item.status == "APPROVE") {
+                item.status = "审批通过等待编辑部处理";
+              } else if (item.status == "APPROVAL_REJECTION") {
+                item.status = "审批不过待修改";
+              } else if (item.status == "HIRE") {
+                item.status = "编辑部已录用";
+              } else if (item.status == "DRAFT") {
+                item.status = "草稿";
+              }
+              return item;
+            });
+            this.total = this.tableData.length;
+          }
         }
       });
     }
   },
   created() {
-    console.log(this.$route.params.id);
-    // this.scanDetail(this.$route.params.id);
+    console.log(this.$route.query.id);
+
+    this.scanDetail(this.$route.query.id);
   }
 };
 </script>

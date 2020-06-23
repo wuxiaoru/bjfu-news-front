@@ -45,6 +45,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="8" style="text-align: center">
+            <el-button type="info" @click="clear">清空</el-button>
             <el-button type="primary" @click="queryList">搜索</el-button>
           </el-col>
         </el-row>
@@ -147,29 +148,7 @@ export default {
         { label: "编辑部已拒稿", value: "REJECTION" }
       ],
       // 表格数据
-      tableData: [
-        {
-          id: 1,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-06 23:58:49"
-        },
-        {
-          id: 2,
-          title: "林业信息拉萨解放了书法家",
-          status: "DRAFT",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-07 00:10:59"
-        },
-        {
-          id: 6,
-          title: "林业信息拉萨解放了书法家",
-          status: "APPROVAL_PENDING",
-          docAuthor: "zhangshan",
-          submitTime: "2020-06-11 08:07:26"
-        }
-      ],
+      tableData: [],
       // 表格操作
       tableOption: [
         {
@@ -243,8 +222,8 @@ export default {
     // 点击查看按钮触发的事件
     scanNews(row) {
       this.$router.push({
-        name: "state-info",
-        params: { id: row.id }
+        path: "/state-info",
+        query: { id: row.id }
       });
     },
     // 点击提交按钮时触发的事件
@@ -375,6 +354,9 @@ export default {
     },
     // 查询所有稿件列表
     queryList() {
+      if (this.searchForm.date == null) {
+        this.searchForm.date = [];
+      }
       const body = {
         userId: this.userId,
         docAuthor: this.searchForm.docAuthor,
@@ -420,9 +402,17 @@ export default {
             this.approveList = res.data;
           }
         });
+    },
+    // 清空搜索内容
+    clear() {
+      (this.searchForm.title = ""),
+        (this.searchForm.docAuthor = ""),
+        (this.searchForm.status = null),
+        (this.searchForm.date = []);
     }
   },
   async created() {
+    // this.userId = localStorage.getItem("userId");
     await this.queryList();
     this.getApproveList();
   }

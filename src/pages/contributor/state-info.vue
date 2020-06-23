@@ -183,10 +183,12 @@ export default {
     // 监听页大小的变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;
+      this.scanDetail(this.$route.query.id);
     },
     // 监听页数的变化
     handleCurrentChange(newCurrent) {
       this.queryInfo.pagenum = newCurrent;
+      this.scanDetail(this.$route.query.id);
     },
     // 查看审批意见
     scanApprove() {
@@ -239,16 +241,14 @@ export default {
               }
               return item;
             });
+            this.total = this.tableData.length;
           }
-          this.total = this.tableData.length;
         }
       });
     }
   },
   created() {
-    console.log(this.$route.params.id);
-
-    this.scanDetail(this.$route.params.id);
+    this.scanDetail(this.$route.query.id);
   }
 };
 </script>

@@ -54,12 +54,12 @@ const routes = [
         component: () => import('../pages/approve/approve-state-info')
       },
       {
-        path: '/approve-suggestion',
+        path: '/approve-suggestion/:id',
         name: 'approve-suggestion',
         component: () => import('../pages/approve/approve-suggestion')
       },
       {
-        path: '/approve-perview-news/:newsId',
+        path: '/approve-perview-news',
         component: () => import('../pages/approve/approve-perview-news')
       },
       {
