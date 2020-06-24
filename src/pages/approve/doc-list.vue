@@ -164,7 +164,7 @@ export default {
       // 对话框显示内容
       approvalForm: [],
       // 登录的用户id
-      userId: 1,
+      userId: 9,
       // 撤回稿件的id
       id: ""
     };

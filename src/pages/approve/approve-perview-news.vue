@@ -1,26 +1,12 @@
 <template>
-  <div>
-    <el-row :gutter="20">
-      <!-- pdf预览 -->
-      <el-col :span="21">
-        <pdf :src="pdfUrl" class="pdfPreview"></pdf>
-      </el-col>
-      <!-- 右侧按钮区 -->
-      <el-col :span="3">
-        <el-row>
-          <el-button type="primary" v-if="showApprove" @click="approveNews">审批稿件</el-button>
-        </el-row>
-        <el-row>
-          <el-button type="primary" v-if="showAppend" @click="approveNews">追加意见</el-button>
-        </el-row>
-        <el-row>
-          <el-button type="primary" @click="downloadSection">下载稿件</el-button>
-        </el-row>
-        <el-row>
-          <el-button type="primary" @click="showPictures">预览附图</el-button>
-        </el-row>
-      </el-col>
-    </el-row>
+  <div style="positioin: relative;">
+    <div id="pdf-content"></div>
+    <div class="btnArea">
+      <el-button type="primary" v-if="showApprove" @click="approveNews">审批稿件</el-button>
+      <el-button type="primary" v-if="showAppend" @click="appendNews">追加意见</el-button>
+      <el-button type="primary" @click="downloadSection">下载稿件</el-button>
+      <el-button type="primary" @click="showPictures">预览附图</el-button>
+    </div>
     <!-- 图片预览区 -->
     <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
     <!-- 点击按钮弹出的对话框 -->
@@ -28,6 +14,7 @@
       :dialogTitle="dialogTitle"
       :dialogVisible="dialogVisible"
       :approvalForm="approvalForm"
+      :isAble="isAble"
       @cancel="cancel"
       @ok="ok"
       @pushId="getId"
@@ -39,10 +26,9 @@
 // 导入组件
 import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 import commonDialog from "../../components/dialog/common-dialog";
-import pdf from "vue-pdf";
+
 export default {
   components: {
-    pdf,
     ElImageViewer,
     commonDialog
   },
@@ -71,7 +57,8 @@ export default {
       // 控制 对话框 是否显示
       dialogVisible: false,
       // 对话框显示内容
-      approvalForm: []
+      approvalForm: [],
+      isAble: true
     };
   },
   methods: {
@@ -81,13 +68,38 @@ export default {
         if (res.success == true) {
           this.pdfUrl = res.data.pdf;
           this.srcList = res.data.pic;
+          this.$nextTick(function() {
+            this.$pdf.embed(`${this.pdfUrl}`, "#pdf-content");
+          });
         }
-        console.log(this.pdfUrl);
       });
     },
     // 审批稿件按钮
     approveNews() {
       this.$router.push("/approve-suggestion/" + this.id);
+    },
+    // 追加意见按钮
+    appendNews() {
+      // 去查询之前审批的意见
+      this.$axios
+        .get("/v1/approve/suggestion.vpage?id=" + this.id)
+        .then(res => {
+          if (res.success == true) {
+            this.dialogTitle = "追加意见";
+            //下载提示框是否显示
+            this.dialogVisible = true;
+            // 如果对话框里面有内容，先清空
+            if (this.approvalForm.length != 0) {
+              this.approvalForm.splice(0, this.approvalForm.length);
+            }
+            this.approvalForm.push({
+              type: "input",
+              label: "审批意见",
+              title: res.data
+            });
+            this.isAble = false;
+          }
+        });
     },
     //下载稿件按钮
     downloadSection() {
@@ -95,11 +107,16 @@ export default {
       this.dialogTitle = "稿件下载确认";
       //下载提示框是否显示
       this.dialogVisible = true;
+      // 如果对话框里面有内容，先清空
+      if (this.approvalForm.length != 0) {
+        this.approvalForm.splice(0, this.approvalForm.length);
+      }
       this.approvalForm.push({
         type: "input",
         label: "稿件名称",
         title: this.title
       });
+      this.isAble = true;
     },
     // 显示图片预览
     showPictures() {
@@ -113,16 +130,41 @@ export default {
       this.dialogVisible = false;
       console.log("用户点击了退出");
     },
-    ok() {
-      // 用户点击了确认，需要下载稿件
-      this.$axios.post("/v1/contribution/download.vpage?id=236").then(res => {
-        // if (res.success == true) {
-        // 稿件撤回成功，重新调用获取稿件列表的接口
-        // this.queryList();
-        // } else {
-        //   this.$message.error("撤回稿件失败，请稍后再试");
-        // }
-      });
+    ok(data) {
+      console.log(data);
+      this.dialogVisible = false;
+      if (data.title == "追加意见") {
+        // 走 追加意见 的接口
+        this.append(data.content[0].title);
+      } else if (data.title == "稿件下载确认") {
+        // 走 下载稿件 的接口
+        this.download();
+      }
+    },
+    // 追加意见
+    append(suggest) {
+      this.$axios
+        .post(
+          "/v1/approve/addSuggestion.vpage?id=" +
+            this.id +
+            "&suggestion=" +
+            suggest
+        )
+        .then(res => {
+          console.log(res);
+        });
+    },
+    // 下载稿件
+    download() {
+      this.$axios
+        .post("/v1/contribution/download.vpage?id=" + this.id)
+        .then(res => {
+          if (res.success == true) {
+            // 稿件下载成功，重新调用获取稿件列表的接口
+          } else {
+            this.$message.error("撤回下载失败，请稍后再试");
+          }
+        });
       console.log("用户点击了OK");
     },
     getId() {
@@ -144,7 +186,23 @@ export default {
 </script>
 
 <style lang="less" scoped>
+#pdf-content {
+  margin: 0 auto;
+  margin-top: 30px;
+  width: 60%;
+  height: 85%;
+  position: absolute;
+  top: 50%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+}
+.btnArea {
+  float: right;
+  margin-right: 30px;
+  width: 100px;
+}
 .el-button {
-  margin-bottom: 20px;
+  margin-left: 0;
+  margin-top: 10px;
 }
 </style>

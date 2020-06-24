@@ -9,7 +9,7 @@
           :label="item.label"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="item.title" autocomplete="off" :disabled="true"></el-input>
+          <el-input v-model="item.title" autocomplete="off" :disabled="isAble"></el-input>
         </el-form-item>
         <!-- 如果是select选择框 -->
         <el-form-item
@@ -66,6 +66,13 @@ export default {
       default: function() {
         return [];
       }
+    },
+    // 输入框是否可以输入
+    isAble: {
+      type: Boolean,
+      default: function() {
+        return true;
+      }
     }
   },
   data() {
@@ -81,7 +88,11 @@ export default {
     },
     // 点击确认按钮时 子组件向父组件传值
     isOk() {
-      this.$emit("ok", { visible: "false", title: this.dialogTitle });
+      this.$emit("ok", {
+        visible: "false",
+        title: this.dialogTitle,
+        content: this.approvalForm
+      });
     },
     changeApproval(id) {
       this.$emit("pushId", id);
