@@ -295,7 +295,7 @@ export default {
           break;
       }
       this.$axios
-        .post("/edit/list.vpage", {
+        .post("/v1/edit/list.vpage", {
           status: this.TextStatus,
           size: this.size,
           page: this.page
@@ -311,7 +311,7 @@ export default {
     },
     // 点击稿件预览按钮
     jumpPreview() {
-      this.$router.push("/preview-section");
+      this.$router.push("/v1/preview-section");
     },
     //点击审批稿件按钮
     approvalSection(info) {
@@ -349,7 +349,7 @@ export default {
       // if (this.selectedTextStatus!="") {
       searchObj.status = this.TextStatus;
       // };
-      this.$axios.post("/edit/list.vpage", searchObj).then(res => {
+      this.$axios.post("/v1/edit/list.vpage", searchObj).then(res => {
         console.log(res);
         this.tableData = res.data.list;
         for (let i = 0; i < this.tableData.length; i++) {

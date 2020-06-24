@@ -207,7 +207,7 @@ export default {
     // 查看稿件详细状态信息
     scanDetail(id) {
       this.$axios
-        .get(process.env.VUE_APP_Contribution + "/detail.vpage?id=" + id)
+        .get("/v1/contribution/detail.vpage?id=" + id)
         .then(res => {
           if (res.success) {
             // 从后端返回的数据中拿出自己需要的数据

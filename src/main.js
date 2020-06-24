@@ -8,6 +8,7 @@ Vue.prototype.$axios = axios
 // 引入element组件库
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
+import {Message} from 'element-ui'
 Vue.use(ElementUI);
 // 导入全局样式表
 import './assets/css/global.css'
@@ -16,8 +17,8 @@ import loading from './components/loading/loading'
 //引入pdf预览插件
 import pdf from 'pdfobject'
 Vue.prototype.$pdf = pdf
+Vue.prototype.$message = Message;
 Vue.component('loading', loading)
-
 Vue.config.productionTip = false
 
 new Vue({

@@ -33,6 +33,7 @@ const routes = [
       },
       {
         path: '/approval-section',
+        name:'approval-section',
         component: () => import('../pages/editor/approval-section.vue')
       },
       {

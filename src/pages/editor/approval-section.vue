@@ -29,7 +29,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        result:"",
+        id:this.$route.params.sectionId,
+        result:"HIRE",
         suggestion:""
       },
       rules: {
@@ -46,7 +47,11 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          alert("submit!");
+          //提交稿件的审批信息
+          this.$axios.post("/v1/edit/deal.vpage",this.ruleForm).then(res=>{
+            console.log(res);
+              
+          })
         } else {
           console.log("error submit!!");
           return false;
@@ -56,7 +61,11 @@ export default {
     resetForm(formName) {
       this.$refs[formName].resetFields();
     }
-  }
+  },
+  mounted() {
+    console.log(this.$route.params.sectionId);
+    
+  },
 };
 </script>
 

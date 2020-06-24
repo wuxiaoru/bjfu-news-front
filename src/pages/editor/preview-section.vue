@@ -4,13 +4,13 @@
     <!-- <div c> -->
     <div id="pdf-content"></div>
     <!-- </div> -->
-    <!-- <div class="btnArea">
-      <el-button @click="downloadSection('假装文章有名字')">下载稿件</el-button>
-      <el-button>编审稿件</el-button>
+    <div class="btnArea">
+      <!-- <el-button @click="downloadSection('假装文章有名字')">下载稿件</el-button> -->
+      <el-button @click="jumpToApproval">编审稿件</el-button>
       <el-button @click="showPictures">附图预览</el-button>
       <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
       <downloadsection-dialog :sectionTitle="sectionTitle" :dialogVisible="ddialogvisible"></downloadsection-dialog>
-    </div> -->
+    </div>
   </div>
 </template>
     <script>
@@ -32,18 +32,16 @@ export default {
       sectionTitle: "",
       //下载提示框是否显示
       ddialogvisible: false,
-      srcList: [
-        "https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg",
-        "https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg"
-      ]
+      srcList: []
     };
   },
   methods: {
     getSectionPdf() {
       this.$axios
-        .get("/contribution/preview.vpage?id=" + this.$route.params.id)
+        .get("/v1/contribution/preview.vpage?id=" + this.$route.params.id)
         .then(res => {
           this.sectionPdf = res.data.pdf;
+          this.srcList = res.data.pic;
           this.$nextTick(function() {
             this.$pdf.embed(`${this.sectionPdf}`, "#pdf-content");
           });
@@ -57,10 +55,28 @@ export default {
       this.ddialogvisible = true;
     },
     showPictures() {
-      this.showViewer = true;
+      if (this.srcList.length == 0) {
+        this.$message({
+      showClose: true,
+      message: "作者未上传图片！",
+      type: "warning"
+    })
+      }else{
+        this.showViewer = true;
+      }
+      
     },
     closeViewer() {
       this.showViewer = false;
+    },
+    //跳转到编审界面
+    jumpToApproval(){
+       this.$router.push({
+        name: "approval-section",
+        params: {
+          sectionId:this.$route.params.id
+        }
+      });  
     }
   },
   mounted() {
@@ -83,5 +99,9 @@ export default {
   float: right;
   margin-right: 30px;
   width: 100px;
+}
+.el-button{
+  margin-left: 0;
+  margin-top: 10px;
 }
 </style>
