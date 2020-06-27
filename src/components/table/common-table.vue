@@ -65,10 +65,11 @@ export default {
   methods: {
     // 点击单元格事件
     show(row, column, cell, event) {
+      console.log(row.id);
       if (column.label == "稿件链接") {
         window.open(
           process.env.VUE_APP_Back +
-            "/v1/contribution/download.vpage?id=" +
+            "/v1/contribution/log/download.vpage?logId=" +
             row.id
         );
       }

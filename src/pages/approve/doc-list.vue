@@ -172,7 +172,7 @@ export default {
       // 设置日期格式
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now();
+          return time.getTime() > Date.now() + 24 * 60 * 60 * 1000;
         }
       }
     };

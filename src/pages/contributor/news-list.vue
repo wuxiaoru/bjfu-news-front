@@ -202,7 +202,8 @@ export default {
       // 设置日期格式
       pickerOptions: {
         disabledDate(time) {
-          return time.getTime() > Date.now();
+          return time.getTime() > Date.now() + 24 * 60 * 60 * 1000;
+          // return time.getTime() > Date.now() - 8.64e6;
         }
       }
     };
@@ -248,7 +249,7 @@ export default {
         {
           type: "select",
           label: "选择审稿人",
-          approval: "",
+          approval: this.approveList[0].id,
           option: this.approveList
         }
       );
@@ -314,6 +315,12 @@ export default {
     },
     // 提交稿件
     submit() {
+      console.log(this.approvalForm.approval);
+      console.log(this.approveList[0].id);
+
+      if (this.approvalForm.approval == undefined) {
+        this.approvalForm.approval = this.approveList[0].id;
+      }
       this.$axios
         .post(
           "/v1/contribution/fast-submit.vpage?id=" +
@@ -422,7 +429,7 @@ export default {
   async created() {
     // this.userId = localStorage.getItem("userId");
     await this.queryList();
-    this.getApproveList();
+    await this.getApproveList();
   }
 };
 </script>
