@@ -10,27 +10,35 @@
 
 <script>
 export default {
-    props:{
-        sectionTitle:{
-            type: String,
-            default:"重新获取文章名称后下载"
-        },
-        dialogVisible:{
-            type: Boolean,
-            default: function(){
-                return false
-            }
-        }
+  props: {
+    sectionTitle: {
+      type: String,
+      default: "重新获取文章名称后下载"
     },
-    data() {
-        return {
-        }
-    },
+    dialogVisible: {
+      type: Boolean,
+      default: function() {
+        return false;
+      }
+    }
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    handleClose(done) {
+      this.$confirm("确认关闭？")
+        .then(_ => {
+          done();
+        })
+        .catch(_ => {});
+    }
+  }
 };
 </script>
 
 <style scoped>
-span{
-    font-size: 16px;
+span {
+  font-size: 16px;
 }
 </style>

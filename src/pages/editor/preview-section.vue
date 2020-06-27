@@ -57,26 +57,25 @@ export default {
     showPictures() {
       if (this.srcList.length == 0) {
         this.$message({
-      showClose: true,
-      message: "作者未上传图片！",
-      type: "warning"
-    })
-      }else{
+          showClose: true,
+          message: "作者未上传图片！",
+          type: "warning"
+        });
+      } else {
         this.showViewer = true;
       }
-      
     },
     closeViewer() {
       this.showViewer = false;
     },
     //跳转到编审界面
-    jumpToApproval(){
-       this.$router.push({
+    jumpToApproval() {
+      this.$router.push({
         name: "approval-section",
         params: {
-          sectionId:this.$route.params.id
+          sectionId: this.$route.params.id
         }
-      });  
+      });
     }
   },
   mounted() {
@@ -88,6 +87,7 @@ export default {
 <style scoped>
 #pdf-content {
   margin: 0 auto;
+  margin-top: 30px;
   width: 60%;
   height: 85%;
   position: absolute;
@@ -95,12 +95,12 @@ export default {
   left: 55%;
   transform: translate(-50%, -50%);
 }
-.btnArea{
+.btnArea {
   float: right;
   margin-right: 30px;
   width: 100px;
 }
-.el-button{
+.el-button {
   margin-left: 0;
   margin-top: 10px;
 }

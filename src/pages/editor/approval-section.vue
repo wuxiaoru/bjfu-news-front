@@ -7,8 +7,8 @@
       label-width="100px"
       class="demo-ruleForm"
     >
-      <el-form-item label="审批结果" prop="result">
-        <el-select v-model="ruleForm.result" placeholder="请选择审批结果">
+      <el-form-item label="审批结果" prop="status">
+        <el-select v-model="ruleForm.status" placeholder="请选择审批结果">
           <el-option label="通过" value="HIRE"></el-option>
           <el-option label="不通过" value="REJECTION"></el-option>
         </el-select>
@@ -17,7 +17,7 @@
         <el-input :rows="4" type="textarea" v-model="ruleForm.suggestion"></el-input>
       </el-form-item>
       <el-form-item class="buttonArea">
-        <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
+        <el-button type="primary" @click="submitForm('ruleForm')">编审</el-button>
         <el-button @click="resetForm('ruleForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -29,17 +29,15 @@ export default {
   data() {
     return {
       ruleForm: {
-        id:this.$route.params.sectionId,
-        result:"HIRE",
-        suggestion:""
+        id: this.$route.params.sectionId,
+        status: "HIRE",
+        suggestion: ""
       },
       rules: {
-        result: [
+        status: [
           { required: true, message: "请选择审批结果", trigger: "change" }
         ],
-        suggestion: [
-          { required: true, message: "请填写意见", trigger: "blur" }
-        ]
+        suggestion: [{ required: true, message: "请填写意见", trigger: "blur" }]
       }
     };
   },
@@ -48,10 +46,23 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           //提交稿件的审批信息
-          this.$axios.post("/v1/edit/deal.vpage",this.ruleForm).then(res=>{
-            console.log(res);
-              
-          })
+          this.$axios
+            .post(
+              "/v1/edit/deal.vpage?id=" +
+                this.ruleForm.id +
+                "&status=" +
+                this.ruleForm.status +
+                "&suggestion=" +
+                this.ruleForm.suggestion
+            )
+            .then(res => {
+              if (res.success == true) {
+                // 编审成功
+                this.$router.push("/section-list");
+              } else {
+                this.$message.error("编审失败，请稍后再试");
+              }
+            });
         } else {
           console.log("error submit!!");
           return false;
@@ -64,8 +75,7 @@ export default {
   },
   mounted() {
     console.log(this.$route.params.sectionId);
-    
-  },
+  }
 };
 </script>
 
@@ -73,21 +83,21 @@ export default {
 .el-card {
   height: 100%;
 }
-.el-form{
-    width: 80%;
-    margin: auto;
+.el-form {
+  width: 80%;
+  margin: auto;
 }
-.el-select{
-    width: 100%;
+.el-select {
+  width: 100%;
 }
-.el-form-item{
-    margin-top: 10%;
+.el-form-item {
+  margin-top: 10%;
 }
-.buttonArea{
-    text-align: center;
+.buttonArea {
+  text-align: center;
 }
-.buttonArea .el-button{
-    width: 15%;
-    margin: 0 10%;
+.buttonArea .el-button {
+  width: 15%;
+  margin: 0 10%;
 }
 </style>

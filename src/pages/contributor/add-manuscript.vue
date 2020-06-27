@@ -162,8 +162,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // 获取所有的审批人列表
-          this.getApproveList();
           // 弹出的对话框的标题
           this.dialogTitle = "选择审批人";
           // 让对话框显示
@@ -182,9 +180,7 @@ export default {
               type: "select",
               label: "选择审稿人",
               approval: "",
-              option:
-                // this.approvalList
-                [{ name: "测试hhh", id: "9" }]
+              option: this.approvalList
             }
           );
         } else {
@@ -195,7 +191,10 @@ export default {
     // 获取审批人列表
     getApproveList() {
       this.$axios
-        .get("/v1/contribution/approve/list.vpage?userId" + this.userId)
+        .get(
+          "/v1/contribution/approve/list.vpage?userId=" +
+            this.manuscriptForm.userId
+        )
         .then(res => {
           this.approvalList = res.data;
         });
@@ -249,6 +248,10 @@ export default {
       this.manuscriptForm.approveId = id;
       console.log(id);
     }
+  },
+  created() {
+    // 获取所有的审批人列表
+    this.getApproveList();
   }
 };
 </script>
