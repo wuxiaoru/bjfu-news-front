@@ -40,6 +40,8 @@
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 :default-time="['00:00:00', '23:59:59']"
+                :editable="false"
+                :picker-options="pickerOptions"
                 style="width:100%"
               ></el-date-picker>
             </el-form-item>
@@ -196,7 +198,13 @@ export default {
       // 登录的用户id
       userId: 1,
       // 审批人列表
-      approveList: []
+      approveList: [],
+      // 设置日期格式
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now();
+        }
+      }
     };
   },
   // 注册组件

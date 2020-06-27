@@ -140,7 +140,7 @@ export default {
           label: "稿件状态"
         },
         {
-          prop: "docAuthor",
+          prop: "docUrl",
           label: "稿件链接"
         },
         {

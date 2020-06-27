@@ -16,12 +16,6 @@ const navData = [{
         "path": 'add-manuscript',
         "children": []
       },
-      // {
-      //   "id": 104,
-      //   "authName": "查看稿件",
-      //   "path": null,
-      //   "children": []
-      // }
     ]
   }, {
     "id": 106,
@@ -32,12 +26,6 @@ const navData = [{
         "id": 107,
         "authName": "稿件列表",
         "path": 'doc-list',
-        "children": []
-      },
-      {
-        "id": 108,
-        "authName": "预览稿件",
-        "path": null,
         "children": []
       }
     ]
@@ -50,12 +38,6 @@ const navData = [{
         "id": 112,
         "authName": "稿件列表",
         "path": 'section-list',
-        "children": []
-      },
-      {
-        "id": 113,
-        "authName": "预览稿件",
-        "path": 'preview-section',
         "children": []
       }
     ]
@@ -86,12 +68,6 @@ const navData = [{
         "id": 120,
         "authName": "添加编辑人",
         "path": "add-user/editor",
-        "children": []
-      },
-      {
-        "id": 121,
-        "authName": "管理文章类别",
-        "path": null,
         "children": []
       }
     ]

@@ -52,7 +52,7 @@
         <span class="headline">{{headline}}</span>
         <!-- 右侧用户信息 -->
         <div class="right-name">
-          <i class="el-icon-message-solid"></i>
+          <!-- <i class="el-icon-message-solid"></i> -->
           <div class="box">
             <span class="front">
               <i class="el-icon-s-custom"></i>
@@ -66,7 +66,7 @@
       <!-- 主体内容区 -->
       <el-main>
         <!-- 路由站位符 -->
-        <router-view />
+        <router-view :key="$route.fullPath" />
       </el-main>
     </el-container>
   </el-container>
@@ -87,24 +87,15 @@ export default {
         "101": "el-icon-user-solid",
         "102": "el-icon-more",
         "103": "el-icon-document-add",
-        "104": "el-icon-view",
-        "105": "el-icon-edit-outline",
         "106": "el-icon-user-solid",
         "107": "el-icon-more",
-        "108": "el-icon-view",
-        "109": "",
-        "110": "",
         "111": "el-icon-user-solid",
         "112": "el-icon-more",
-        "113": "el-icon-view",
-        "114": "",
-        "115": "el-icon-edit-outline",
         "116": "el-icon-user-solid",
         "117": "el-icon-more",
         "118": "el-icon-more",
         "119": "el-icon-document-add",
-        "120": "el-icon-document-add",
-        "121": "el-icon-document-copy"
+        "120": "el-icon-document-add"
       },
       // 被激活的路径
       activePath: ""

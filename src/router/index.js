@@ -23,17 +23,17 @@ const routes = [
       },
       {
         path: '/section-info',
-        name:'section-info',
+        name: 'section-info',
         component: () => import('../pages/editor/section-info.vue')
       },
       {
         path: '/preview-section',
-        name:'preview-section',
+        name: 'preview-section',
         component: () => import('../pages/editor/preview-section.vue')
       },
       {
         path: '/approval-section',
-        name:'approval-section',
+        name: 'approval-section',
         component: () => import('../pages/editor/approval-section.vue')
       },
       {

@@ -1,7 +1,14 @@
 <template>
   <div>
     <!-- 表格部分 -->
-    <el-table :data="tableData" stripe border :default-sort="{prop: 'date', order: 'descending'}">
+    <el-table
+      :data="tableData"
+      stripe
+      border
+      :default-sort="{prop: 'date', order: 'descending'}"
+      @cell-click="show"
+      :cell-style="changeCellStyle"
+    >
       <!-- 表格业务内容列 -->
       <template v-for="(item, index) in tableOption">
         <el-table-column
@@ -55,7 +62,28 @@ export default {
       }
     }
   },
-  methods: {}
+  methods: {
+    // 点击单元格事件
+    show(row, column, cell, event) {
+      if (column.label == "稿件链接") {
+        window.open(
+          process.env.VUE_APP_Back +
+            "/v1/contribution/download.vpage?id=" +
+            row.id
+        );
+      }
+    },
+    // 更改某列的样式事件
+    changeCellStyle(row, column, rowIndex, columnIndex) {
+      // 列的label的名称
+      if (row.column.label === "稿件链接") {
+        //修改的样式
+        return "color: #1f9fff";
+      } else {
+        return "";
+      }
+    }
+  }
 };
 </script>
 

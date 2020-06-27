@@ -123,29 +123,7 @@ export default {
           "我是编辑意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的"
       },
       // 表格数据
-      tableData: [
-        {
-          operateTime: "2016-05-02 11:31:17",
-          operateName: "张老师",
-          status: "编辑部已录用",
-          docAuthor: "你猜我猜不猜.doc",
-          suggestion: "暂无"
-        },
-        {
-          operateTime: "2020-06-09 16:26:47",
-          operateName: "郝老师",
-          status: "审批通过待编辑部处理",
-          docAuthor: "我不猜.doc",
-          suggestion: "暂无"
-        },
-        {
-          operateTime: "2020-6-15 11:17:55",
-          operateName: "王老师",
-          status: "待审批",
-          docAuthor: "我想让你猜.doc",
-          suggestion: "真烦"
-        }
-      ],
+      tableData: [],
       // 表格操作
       tableOption: [
         {
@@ -162,7 +140,7 @@ export default {
           label: "稿件状态"
         },
         {
-          prop: "docAuthor",
+          prop: "docUrl",
           label: "稿件链接"
         },
         {

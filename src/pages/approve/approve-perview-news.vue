@@ -156,16 +156,11 @@ export default {
     },
     // 下载稿件
     download() {
-      this.$axios
-        .post("/v1/contribution/download.vpage?id=" + this.id)
-        .then(res => {
-          if (res.success == true) {
-            // 稿件下载成功，重新调用获取稿件列表的接口
-          } else {
-            this.$message.error("撤回下载失败，请稍后再试");
-          }
-        });
-      console.log("用户点击了OK");
+      window.open(
+        process.env.VUE_APP_Back +
+          "/v1/contribution/download.vpage?id=" +
+          this.id
+      );
     },
     getId() {
       console.log("我要获取id了");
