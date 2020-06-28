@@ -152,6 +152,11 @@ export default {
         )
         .then(res => {
           console.log(res);
+          if (res.success == true) {
+            this.$message.success("追加意见成功");
+          } else {
+            this.$message.error("追加意见失败，请稍后再试");
+          }
         });
     },
     // 下载稿件

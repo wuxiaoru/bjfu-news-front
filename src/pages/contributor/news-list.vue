@@ -420,10 +420,11 @@ export default {
     },
     // 清空搜索内容
     clear() {
-      (this.searchForm.title = ""),
-        (this.searchForm.docAuthor = ""),
-        (this.searchForm.status = null),
-        (this.searchForm.date = []);
+      this.searchForm.title = "";
+      this.searchForm.docAuthor = "";
+      this.searchForm.status = null;
+      this.searchForm.date = [];
+      this.queryList();
     }
   },
   async created() {
