@@ -284,10 +284,11 @@ export default {
       console.log("我要获取id了");
     },
     clear() {
-      (this.searchForm.title = ""),
-        (this.searchForm.docAuthor = ""),
-        (this.searchForm.status = null),
-        (this.searchForm.date = []);
+      this.searchForm.title = "";
+      this.searchForm.docAuthor = "";
+      this.searchForm.status = null;
+      this.searchForm.date = [];
+      this.queryList();
     }
   },
   created() {
