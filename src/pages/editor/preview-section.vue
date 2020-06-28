@@ -5,11 +5,11 @@
     <div id="pdf-content"></div>
     <!-- </div> -->
     <div class="btnArea">
-      <!-- <el-button @click="downloadSection('假装文章有名字')">下载稿件</el-button> -->
-      <el-button @click="jumpToApproval">编审稿件</el-button>
+      <el-button v-if="this.$route.params.isOverLook == false" @click="downloadSection()">下载稿件</el-button>
+      <el-button v-if="this.$route.params.isOverLook == false" @click="jumpToApproval">编审稿件</el-button>
       <el-button @click="showPictures">附图预览</el-button>
       <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
-      <downloadsection-dialog :sectionTitle="sectionTitle" :dialogVisible="ddialogvisible"></downloadsection-dialog>
+      <downloadsection-dialog @confirmDownload="confirmDownload" :sectionTitle="sectionTitle" :dialogVisible.sync="ddialogvisible"></downloadsection-dialog>
     </div>
   </div>
 </template>
@@ -48,9 +48,9 @@ export default {
         });
     },
     //下载稿件按钮
-    downloadSection(sectionInfo) {
+    downloadSection() {
       // 需要下载的文章标题
-      this.sectionTitle = sectionInfo;
+      this.sectionTitle = this.$route.params.title;
       //下载提示框是否显示
       this.ddialogvisible = true;
     },
@@ -76,6 +76,15 @@ export default {
           sectionId: this.$route.params.id
         }
       });
+    },
+    confirmDownload(){
+      console.log("sfsfs");
+      
+       window.open(
+        process.env.VUE_APP_Back +
+          "/v1/contribution/download.vpage?id=" +
+          this.$route.params.id
+      );
     }
   },
   mounted() {
@@ -84,7 +93,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 #pdf-content {
   margin: 0 auto;
   margin-top: 30px;

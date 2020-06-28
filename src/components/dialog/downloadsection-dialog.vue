@@ -3,7 +3,7 @@
     <span>稿件名称：{{sectionTitle}}</span>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="confirm">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -32,6 +32,11 @@ export default {
           done();
         })
         .catch(_ => {});
+    },
+    confirm(){
+      this.$emit("update:dialogVisible",false);
+      this.$emit("confirmDownload");
+      
     }
   }
 };

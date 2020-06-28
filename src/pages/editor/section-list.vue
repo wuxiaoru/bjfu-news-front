@@ -6,24 +6,32 @@
         <el-row :gutter="30">
           <el-col :span="8">
             <el-form-item label="文章名称">
-              <el-input v-model="textName"></el-input>
+              <el-input v-model="textName" show-word-limit maxlength="30"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审稿日期">
               <el-date-picker
+                :picker-options="pickerOptions"
                 v-model="selectedTextDateTime"
                 type="daterange"
                 range-separator="-"
-                start-placeholder="开始"
-                end-placeholder="结束"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="30">
           <el-col :span="8">
-            <el-form-item label="单位">
-              <el-select v-model="selectedUnitOption" placeholder="请选择">
+            <el-form-item label="作者姓名">
+              <el-input v-model="docAuthor" show-word-limit maxlength="10"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="所在单位">
+              <el-select v-model="selectedUnitOption" filterable placeholder="请选择">
                 <el-option
                   v-for="item in selectOptions"
                   :key="item.value"
@@ -33,12 +41,11 @@
               </el-select>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row :gutter="30">
-          <el-col :span="8">
-            <el-form-item label="作者姓名">
-              <el-input v-model="docAuthor"></el-input>
-            </el-form-item>
+          <el-col :span="8" :push="3">
+            <!-- 清空按钮 -->
+            <el-button class="search" type="info" @click="clearText">清空</el-button>
+            <!-- 搜索按钮 -->
+            <el-button class="search" type="primary" @click="searchText">搜索</el-button>
           </el-col>
           <!-- <el-col :span="8">
             <el-form-item label="稿件状态">
@@ -54,8 +61,7 @@
           </el-col>-->
         </el-row>
       </el-form>
-      <!-- 搜索按钮 -->
-      <el-button class="search" type="primary" @click="searchText">搜索</el-button>
+
       <!-- 分割线 -->
       <el-divider></el-divider>
 
@@ -79,12 +85,17 @@
             size="mini"
             @click="getSectionInfo(scope.row)"
           >查看</el-button>
-          <el-button v-if="searchType == 0" type="warning" size="mini" @click="approvalSection(scope.row)">编审</el-button>
+          <el-button
+            v-if="searchType == 0"
+            type="warning"
+            size="mini"
+            @click="approvalSection(scope.row)"
+          >编审</el-button>
           <el-button
             v-if="searchType == 1 || searchType == 2"
             type="info"
             size="mini"
-            @click="jumpPreview"
+            @click="priviewSection(scope.row)"
           >预览</el-button>
           <el-button
             v-if="searchType == 2"
@@ -99,7 +110,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[5, 10, 20, 50]"
+        :page-sizes="[10, 20, 50]"
         :page-size="size"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
@@ -120,11 +131,11 @@ export default {
   data() {
     return {
       //每页条数
-      size:5,
+      size: 5,
       //当前的页数
-      page:0,
+      page: 0,
       //当前记录条数
-      total:0,
+      total: 0,
       // 0 已审核待编辑处理  1 已拒稿  2 已录用
       searchType: 0,
       value1: "",
@@ -272,7 +283,14 @@ export default {
       // 需要下载的文章标题
       sectionTitle: "",
       //下载提示框是否显示
-      ddialogvisible: false
+      ddialogvisible: false,
+      // 设置日期格式
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > Date.now() + 24 * 60 * 60 * 1000;
+          // return time.getTime() > Date.now() - 8.64e6;
+        }
+      }
     };
   },
   methods: {
@@ -314,11 +332,24 @@ export default {
       this.$router.push("/v1/preview-section");
     },
     //点击审批稿件按钮
-    approvalSection(info) {
-       this.$router.push({
+    approvalSection(info) {   
+      this.$router.push({
         name: "preview-section",
         params: {
-          id: info.id
+          id: info.id,
+          title:info.title,
+          isOverLook:false
+        }
+      });
+    },
+      //点击预览稿件按钮
+    priviewSection(info) {   
+      this.$router.push({
+        name: "preview-section",
+        params: {
+          id: info.id,
+          title:info.title,
+          isOverLook:true
         }
       });
     },
@@ -356,6 +387,9 @@ export default {
           this.tableData[i].status = this.status;
         }
       });
+    },
+    clearText(){
+      
     },
     //预览指定稿件
     previewSection(info) {
@@ -403,23 +437,19 @@ export default {
 };
 </script>
 
-<style scoped>
-.el-form {
-  width: 65%;
-  margin-left: 10%;
-}
+<style lang="less" scoped>
 .el-date-editor--daterange.el-input__inner {
   width: 100%;
 }
 .el-select {
   width: 100%;
 }
-.search {
-  position: absolute;
-  right: 100px;
-  top: 140px;
-  width: 100px;
-}
+// .search {
+//   position: absolute;
+//   right: 100px;
+//   top: 140px;
+//   width: 100px;
+// }
 .el-button {
   margin-left: 0;
 }
