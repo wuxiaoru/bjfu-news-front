@@ -11,7 +11,7 @@
                 v-model="searchForm.eno"
                 placeholder="请输入工号"
                 pattern="[0-9]*"
-                oninput="value=value.replace(/[^\d]/g,'')"
+                @input="value=value.replace(/[^\d]/g,'')"
                 show-word-limit
                 maxlength="10"
               ></el-input>
@@ -126,7 +126,7 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="cancelForm('editForm')">取 消</el-button>
           <el-button type="primary" @click="submit('editForm')">确 定</el-button>
         </div>
       </el-dialog>
@@ -361,13 +361,13 @@ export default {
     // 作者姓名检测 只能输入英文 汉字和·
     nameCheck() {
       this.searchForm.userName = this.searchForm.userName.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },
     formNameCheck() {
       this.editForm.userName = this.editForm.userName.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },
@@ -421,17 +421,28 @@ export default {
       this.editForm = row;
       console.log(this.editForm);
     },
+    // 提交表单的事件
     submit(form) {
-      console.log(this.editForm);
-      // 发起编辑用户的请求
-      this.$axios.post("/v1/user/info/edit.vpage", this.editForm).then(res => {
-        if (res.success == true) {
-          // 编辑用户成功
-          this.dialogFormVisible = false;
-        } else {
-          this.$message.error("编辑用户信息失败，请稍后再试");
+      this.$refs[form].validate(valid => {
+        if (valid) {
+          // 发起编辑用户的请求
+          this.$axios
+            .post("/v1/user/info/edit.vpage", this.editForm)
+            .then(res => {
+              if (res.success == true) {
+                // 编辑用户成功
+                this.dialogFormVisible = false;
+              } else {
+                this.$message.error("编辑用户信息失败，请稍后再试");
+              }
+            });
         }
       });
+    },
+    // 取消表单的事件
+    cancelForm() {
+      this.dialogFormVisible = false;
+      this.queryList();
     },
     // 监听页大小的变化
     handleSizeChange(newSize) {

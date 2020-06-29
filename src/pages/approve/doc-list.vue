@@ -197,7 +197,7 @@ export default {
     // 作者姓名检测 只能输入英文 汉字和·
     nameCheck() {
       this.searchForm.docAuthor = this.searchForm.docAuthor.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },

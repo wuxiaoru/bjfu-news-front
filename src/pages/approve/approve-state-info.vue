@@ -84,7 +84,7 @@
       ></el-pagination>
     </el-card>
     <!-- 意见弹出框 -->
-    <el-dialog title="审批意见" :visible.sync="dialogVisible" width="30%">
+    <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" width="30%">
       <span>{{suggestion}}</span>
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
@@ -116,11 +116,9 @@ export default {
         // 稿件状态
         status: "",
         // 审批意见
-        approveSuggestion:
-          "我是审批意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的",
+        approveSuggestion: "",
         // 编辑意见
-        editSuggestion:
-          "我是编辑意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的"
+        editSuggestion: ""
       },
       // 表格数据
       tableData: [],
@@ -165,7 +163,9 @@ export default {
         RE_APPROVAL_PENDING: "重投待审稿",
         APPROVE: "审稿通过等待编辑部处理",
         APPROVAL_REJECTION: "审稿不过待修改"
-      }
+      },
+      // 弹出的对话框的名称
+      dialogTitle: ""
     };
   },
   components: {
@@ -187,12 +187,20 @@ export default {
     },
     // 查看审批意见
     scanApprove() {
+      this.dialogTitle = "审批意见";
       this.suggestion = this.nowState.approveSuggestion;
+      if (this.suggestion == null) {
+        this.suggestion = "暂无意见";
+      }
       this.dialogVisible = true;
     },
     // 查看编辑意见
     scanedit() {
+      this.dialogTitle = "编辑意见";
       this.suggestion = this.nowState.editSuggestion;
+      if (this.suggestion == null) {
+        this.suggestion = "暂无意见";
+      }
       this.dialogVisible = true;
     },
     // 查看稿件详细状态信息

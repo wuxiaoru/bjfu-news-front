@@ -69,8 +69,6 @@
       <div class="clearfix">
         <el-button type="primary" style="float: right" @click="createArticle">新建文章</el-button>
       </div>
-      <!-- 加载Loading的组件 -->
-      <!-- <loading :isShow = "isShow"></loading> -->
       <!-- 新闻列表区域 -->
       <common-table :tableData="tableData" :tableOption.sync="tableOption" :isOperate="isOperate">
         <!-- 操作列，填充operate的插槽 -->
@@ -136,8 +134,6 @@ import commonDialog from "../../components/dialog/common-dialog";
 export default {
   data() {
     return {
-      // 控制 加载组件 是否显示
-      isShow: true,
       // 搜索表单的内容
       searchForm: {
         // 文章标题
@@ -228,7 +224,7 @@ export default {
     // 作者姓名检测 只能输入英文 汉字和·
     nameCheck() {
       this.searchForm.docAuthor = this.searchForm.docAuthor.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },

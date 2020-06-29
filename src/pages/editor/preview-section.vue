@@ -1,15 +1,26 @@
 <template>
   <div style="positioin: relative;">
-    <!-- <p>预览稿件界面</p> -->
-    <!-- <div c> -->
+    <!-- 加载Loading的组件 -->
+    <loading :isShow="isShow"></loading>
     <div id="pdf-content"></div>
-    <!-- </div> -->
     <div class="btnArea">
-      <el-button v-if="this.$route.params.isOverLook == false" @click="downloadSection()">下载稿件</el-button>
-      <el-button v-if="this.$route.params.isOverLook == false" @click="jumpToApproval">编审稿件</el-button>
-      <el-button @click="showPictures">附图预览</el-button>
+      <el-button
+        type="primary"
+        v-if="this.$route.params.isOverLook == false"
+        @click="downloadSection()"
+      >下载稿件</el-button>
+      <el-button
+        type="primary"
+        v-if="this.$route.params.isOverLook == false"
+        @click="jumpToApproval"
+      >编审稿件</el-button>
+      <el-button type="primary" @click="showPictures">附图预览</el-button>
       <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
-      <downloadsection-dialog @confirmDownload="confirmDownload" :sectionTitle="sectionTitle" :dialogVisible.sync="ddialogvisible"></downloadsection-dialog>
+      <downloadsection-dialog
+        @confirmDownload="confirmDownload"
+        :sectionTitle="sectionTitle"
+        :dialogVisible.sync="ddialogvisible"
+      ></downloadsection-dialog>
     </div>
   </div>
 </template>
@@ -26,6 +37,8 @@ export default {
   },
   data() {
     return {
+      // 控制 加载组件 是否显示
+      isShow: true,
       sectionPdf: "",
       showViewer: false, // 显示查看器
       // 需要下载的文章标题
@@ -45,6 +58,7 @@ export default {
           this.$nextTick(function() {
             this.$pdf.embed(`${this.sectionPdf}`, "#pdf-content");
           });
+          this.isShow = false;
         });
     },
     //下载稿件按钮
@@ -77,10 +91,10 @@ export default {
         }
       });
     },
-    confirmDownload(){
+    confirmDownload() {
       console.log("sfsfs");
-      
-       window.open(
+
+      window.open(
         process.env.VUE_APP_Back +
           "/v1/contribution/download.vpage?id=" +
           this.$route.params.id

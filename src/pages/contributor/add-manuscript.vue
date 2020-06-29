@@ -159,14 +159,14 @@ export default {
     // 作者姓名检测 只能输入英文 汉字和·
     nameCheck() {
       this.manuscriptForm.docAuthor = this.manuscriptForm.docAuthor.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },
     // 图片姓名检测 只能输入英文 汉字和·
     picNameCheck() {
       this.manuscriptForm.picAuthor = this.manuscriptForm.picAuthor.replace(
-        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
         ""
       );
     },

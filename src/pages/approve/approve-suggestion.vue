@@ -79,6 +79,10 @@ export default {
             this.$message.error("审稿失败，请稍后再试");
           }
         });
+    },
+    // 用户点击取消按钮的时候，返回到审稿人界面
+    resetForm() {
+      this.$router.push("/doc-list");
     }
   },
   created() {

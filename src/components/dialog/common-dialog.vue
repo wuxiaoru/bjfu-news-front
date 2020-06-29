@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       // 左边提示信息的宽度
-      formLabelWidth: "80px"
+      formLabelWidth: "85px"
     };
   },
   methods: {
