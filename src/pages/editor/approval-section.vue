@@ -9,7 +9,7 @@
     >
       <el-form-item label="审批结果" prop="status">
         <el-select v-model="dataInfo.status" placeholder="请选择审批结果">
-          <el-option label="通过" value="HIRE"></el-option>
+          <el-option label="通过" value="AGREE"></el-option>
           <el-option label="不通过" value="REJECTION"></el-option>
         </el-select>
       </el-form-item>
@@ -30,7 +30,7 @@ export default {
     return {
       dataInfo: {
         id: this.$route.params.sectionId,
-        status: "HIRE",
+        status: "AGREE",
         suggestion: ""
       },
       rules: {

@@ -15,10 +15,11 @@
                 :picker-options="pickerOptions"
                 v-model="selectedTextDateTime"
                 type="daterange"
-                range-separator="-"
+                range-separator="至"
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -116,7 +117,7 @@
         :total="total"
       ></el-pagination>
     </el-card>
-    <downloadsection-dialog :sectionTitle="sectionTitle" :dialogVisible="ddialogvisible"></downloadsection-dialog>
+    <downloadsection-dialog :sectionTitle="sectionTitle" :dialogVisible.sync="ddialogvisible" @confirmDownload="confirmDownload"></downloadsection-dialog>
   </div>
 </template>
 
@@ -130,8 +131,10 @@ export default {
   },
   data() {
     return {
+      // 当前选中的稿件id
+      selectedSectionId:"",
       //每页条数
-      size: 5,
+      size: 10,
       //当前的页数
       page: 0,
       //当前记录条数
@@ -188,6 +191,10 @@ export default {
       selectedTextStatus: "",
       //单位数据
       selectOptions: [
+        {
+          value: null,
+          label: ""
+        },
         {
           value: "林学院",
           label: "林学院"
@@ -355,10 +362,20 @@ export default {
     },
     //下载稿件按钮
     downloadSection(sectionInfo) {
+      console.log(sectionInfo);
+      
+       this.selectedSectionId= sectionInfo.id;
       // 需要下载的文章标题
-      this.sectionTitle = sectionInfo.name;
+      this.sectionTitle = sectionInfo.title;
       //下载提示框是否显示
       this.ddialogvisible = true;
+    },
+    confirmDownload(){
+      window.open(
+        process.env.VUE_APP_Back +
+          "/v1/contribution/download.vpage?id=" +
+          this.selectedSectionId
+      );
     },
     //按条件查询文章
     searchText() {
@@ -372,7 +389,7 @@ export default {
         searchObj.endTime = this.selectedTextDateTime[1];
       }
       if (this.selectedUnitOption != "") {
-        searchObj.unit = this.textName;
+        searchObj.unit = this.selectedUnitOption;
       }
       if (this.docAuthor.trim() != "") {
         searchObj.docAuthor = this.docAuthor;
@@ -389,7 +406,10 @@ export default {
       });
     },
     clearText(){
-      
+      this.textName = "";
+      this.selectedTextDateTime=[];
+      this.docAuthor="";
+      this.selectedUnitOption=null;
     },
     //预览指定稿件
     previewSection(info) {
@@ -404,34 +424,48 @@ export default {
           id: info.id
         }
       });
-      // console.log(info);
-      // this.$axios.get("/contribution/detail.vpage?id="+info.id).then(res=>{
-
-      //   if (res.success) {
-      //     this.$router.push({
-      //       name:"state-info",
-      //       params:{
-
-      //       }
-      //     })
-      //   } else {
-
-      //   }
-
-      // })
     },
     // 监听页大小的变化
     handleSizeChange(newSize) {
+      console.log("监听页大小的变化");
+      
       this.size = newSize;
+       this.$axios
+        .post("/v1/edit/list.vpage", {
+          status: this.TextStatus,
+          size: this.size,
+          page: this.page
+        })
+        .then(res => {
+          // console.log(res);
+          this.tableData = res.data.list;
+          this.total = res.data.totalCount;
+          for (let i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].status = this.status;
+          }
+        });
     },
     // 监听页数的变化
     handleCurrentChange(newCurrent) {
+      console.log("监听页数的变化");
       this.page = newCurrent;
+       this.$axios
+        .post("/v1/edit/list.vpage", {
+          status: this.TextStatus,
+          size: this.size,
+          page: this.page
+        })
+        .then(res => {
+          // console.log(res);
+          this.tableData = res.data.list;
+          this.total = res.data.totalCount;
+          for (let i = 0; i < this.tableData.length; i++) {
+            this.tableData[i].status = this.status;
+          }
+        });
     }
   },
   mounted() {
-    console.log("1111");
-
     this.changeSearchType(0);
   }
 };
@@ -444,12 +478,6 @@ export default {
 .el-select {
   width: 100%;
 }
-// .search {
-//   position: absolute;
-//   right: 100px;
-//   top: 140px;
-//   width: 100px;
-// }
 .el-button {
   margin-left: 0;
 }
