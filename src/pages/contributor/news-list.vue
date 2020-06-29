@@ -7,12 +7,23 @@
         <el-row :gutter="10">
           <el-col :span="8">
             <el-form-item label="文章标题" prop="title">
-              <el-input v-model="searchForm.title" placeholder="请输入文章标题"></el-input>
+              <el-input
+                v-model="searchForm.title"
+                show-word-limit
+                maxlength="30"
+                placeholder="请输入文章标题"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="作者姓名" prop="docAuthor">
-              <el-input v-model="searchForm.docAuthor" placeholder="请输入作者姓名"></el-input>
+              <el-input
+                v-model="searchForm.docAuthor"
+                placeholder="请输入作者姓名"
+                show-word-limit
+                maxlength="10"
+                @input="nameCheck"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -214,6 +225,13 @@ export default {
     commonDialog
   },
   methods: {
+    // 作者姓名检测 只能输入英文 汉字和·
+    nameCheck() {
+      this.searchForm.docAuthor = this.searchForm.docAuthor.replace(
+        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        ""
+      );
+    },
     // 监听页大小的变化
     handleSizeChange(newSize) {
       this.queryInfo.pagesize = newSize;

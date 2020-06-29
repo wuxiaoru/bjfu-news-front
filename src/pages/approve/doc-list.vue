@@ -7,12 +7,23 @@
         <el-row :gutter="10">
           <el-col :span="8">
             <el-form-item label="文章名称" prop="title">
-              <el-input v-model="searchForm.title" placeholder="请输入文章名称"></el-input>
+              <el-input
+                v-model="searchForm.title"
+                placeholder="请输入文章名称"
+                show-word-limit
+                maxlength="30"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="作者姓名" prop="docAuthor">
-              <el-input v-model="searchForm.docAuthor" placeholder="请输入作者姓名"></el-input>
+              <el-input
+                v-model="searchForm.docAuthor"
+                placeholder="请输入作者姓名"
+                show-word-limit
+                maxlength="10"
+                @input="nameCheck"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -183,6 +194,13 @@ export default {
     commonDialog
   },
   methods: {
+    // 作者姓名检测 只能输入英文 汉字和·
+    nameCheck() {
+      this.searchForm.docAuthor = this.searchForm.docAuthor.replace(
+        /a-zA-Z[^\u4E00-\u9FA5\·]/g,
+        ""
+      );
+    },
     // 界面加载完成后查询所有的稿件列表
     queryList() {
       if (this.searchForm.date == null) {

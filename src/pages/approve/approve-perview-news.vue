@@ -14,7 +14,6 @@
       :dialogTitle="dialogTitle"
       :dialogVisible="dialogVisible"
       :approvalForm="approvalForm"
-      :isAble="isAble"
       @cancel="cancel"
       @ok="ok"
       @pushId="getId"
@@ -57,8 +56,7 @@ export default {
       // 控制 对话框 是否显示
       dialogVisible: false,
       // 对话框显示内容
-      approvalForm: [],
-      isAble: true
+      approvalForm: []
     };
   },
   methods: {
@@ -93,11 +91,10 @@ export default {
               this.approvalForm.splice(0, this.approvalForm.length);
             }
             this.approvalForm.push({
-              type: "input",
+              type: "textarea",
               label: "审批意见",
               title: res.data
             });
-            this.isAble = false;
           }
         });
     },
@@ -116,7 +113,6 @@ export default {
         label: "稿件名称",
         title: this.title
       });
-      this.isAble = true;
     },
     // 显示图片预览
     showPictures() {
