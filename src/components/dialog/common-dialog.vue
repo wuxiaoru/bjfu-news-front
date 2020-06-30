@@ -14,7 +14,7 @@
           :label="item.label"
           :label-width="formLabelWidth"
         >
-          <el-input v-model="item.title" autocomplete="off" :disabled="isAble"></el-input>
+          <el-input v-model="item.title" disabled></el-input>
         </el-form-item>
         <!-- 如果是select选择框 -->
         <el-form-item
@@ -38,13 +38,14 @@
             ></el-option>
           </el-select>
         </el-form-item>
+        <!-- 如果是textarea输入框 -->
         <el-form-item
           :key="index"
-          v-if="item.type=='span'"
+          v-if="item.type=='textarea'"
           :label="item.label"
           :label-width="formLabelWidth"
         >
-          <span>{{item.title}}</span>
+          <el-input type="textarea" v-model="item.title" show-word-limit maxlength="150"></el-input>
         </el-form-item>
       </template>
     </el-form>
@@ -79,19 +80,12 @@ export default {
       default: function() {
         return [];
       }
-    },
-    // 输入框是否可以输入
-    isAble: {
-      type: Boolean,
-      default: function() {
-        return true;
-      }
     }
   },
   data() {
     return {
       // 左边提示信息的宽度
-      formLabelWidth: "120px"
+      formLabelWidth: "85px"
     };
   },
   methods: {

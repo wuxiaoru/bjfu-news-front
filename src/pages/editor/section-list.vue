@@ -27,7 +27,7 @@
         <el-row :gutter="30">
           <el-col :span="8">
             <el-form-item label="作者姓名">
-              <el-input v-model="docAuthor" show-word-limit maxlength="10"></el-input>
+              <el-input v-model="docAuthor" show-word-limit maxlength="10" @input="nameCheck"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -117,7 +117,11 @@
         :total="total"
       ></el-pagination>
     </el-card>
-    <downloadsection-dialog :sectionTitle="sectionTitle" :dialogVisible.sync="ddialogvisible" @confirmDownload="confirmDownload"></downloadsection-dialog>
+    <downloadsection-dialog
+      :sectionTitle="sectionTitle"
+      :dialogVisible.sync="ddialogvisible"
+      @confirmDownload="confirmDownload"
+    ></downloadsection-dialog>
   </div>
 </template>
 
@@ -132,7 +136,7 @@ export default {
   data() {
     return {
       // 当前选中的稿件id
-      selectedSectionId:"",
+      selectedSectionId: "",
       //每页条数
       size: 10,
       //当前的页数
@@ -301,6 +305,10 @@ export default {
     };
   },
   methods: {
+    // 作者姓名检测 只能输入英文 汉字和·
+    nameCheck() {
+      this.docAuthor = this.docAuthor.replace(/[^a-zA-Z\u4E00-\u9FA5\·]/g, "");
+    },
     changeSearchType(typeid) {
       this.searchType = typeid;
       switch (typeid) {
@@ -339,38 +347,38 @@ export default {
       this.$router.push("/v1/preview-section");
     },
     //点击审批稿件按钮
-    approvalSection(info) {   
+    approvalSection(info) {
       this.$router.push({
         name: "preview-section",
         params: {
           id: info.id,
-          title:info.title,
-          isOverLook:false
+          title: info.title,
+          isOverLook: false
         }
       });
     },
-      //点击预览稿件按钮
-    priviewSection(info) {   
+    //点击预览稿件按钮
+    priviewSection(info) {
       this.$router.push({
         name: "preview-section",
         params: {
           id: info.id,
-          title:info.title,
-          isOverLook:true
+          title: info.title,
+          isOverLook: true
         }
       });
     },
     //下载稿件按钮
     downloadSection(sectionInfo) {
       console.log(sectionInfo);
-      
-       this.selectedSectionId= sectionInfo.id;
+
+      this.selectedSectionId = sectionInfo.id;
       // 需要下载的文章标题
       this.sectionTitle = sectionInfo.title;
       //下载提示框是否显示
       this.ddialogvisible = true;
     },
-    confirmDownload(){
+    confirmDownload() {
       window.open(
         process.env.VUE_APP_Back +
           "/v1/contribution/download.vpage?id=" +
@@ -405,11 +413,11 @@ export default {
         }
       });
     },
-    clearText(){
+    clearText() {
       this.textName = "";
-      this.selectedTextDateTime=[];
-      this.docAuthor="";
-      this.selectedUnitOption=null;
+      this.selectedTextDateTime = [];
+      this.docAuthor = "";
+      this.selectedUnitOption = null;
     },
     //预览指定稿件
     previewSection(info) {
@@ -428,9 +436,9 @@ export default {
     // 监听页大小的变化
     handleSizeChange(newSize) {
       console.log("监听页大小的变化");
-      
+
       this.size = newSize;
-       this.$axios
+      this.$axios
         .post("/v1/edit/list.vpage", {
           status: this.TextStatus,
           size: this.size,
@@ -449,7 +457,7 @@ export default {
     handleCurrentChange(newCurrent) {
       console.log("监听页数的变化");
       this.page = newCurrent;
-       this.$axios
+      this.$axios
         .post("/v1/edit/list.vpage", {
           status: this.TextStatus,
           size: this.size,

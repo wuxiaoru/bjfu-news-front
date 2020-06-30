@@ -8,7 +8,12 @@
         </el-select>
       </el-form-item>
       <el-form-item label="审稿意见">
-        <el-input type="textarea" v-model="suggestionForm.suggestion"></el-input>
+        <el-input
+          type="textarea"
+          v-model="suggestionForm.suggestion"
+          show-word-limit
+          maxlength="150"
+        ></el-input>
       </el-form-item>
       <!-- <el-form-item label="审批稿上传">
         <el-row>
@@ -74,6 +79,10 @@ export default {
             this.$message.error("审稿失败，请稍后再试");
           }
         });
+    },
+    // 用户点击取消按钮的时候，返回到审稿人界面
+    resetForm() {
+      this.$router.push("/doc-list");
     }
   },
   created() {

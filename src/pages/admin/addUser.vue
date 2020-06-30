@@ -1,11 +1,26 @@
 <template>
   <el-card>
     <el-form :model="addForm" ref="addForm" :rules="rules" label-width="80px" class="addFrom">
+      <!-- 职工号只允许输入数字 -->
       <el-form-item label="职工号" prop="eno">
-        <el-input v-model="addForm.eno" placeholder="请输入职工号"></el-input>
+        <el-input
+          v-model="addForm.eno"
+          placeholder="请输入职工号"
+          pattern="[0-9]*"
+          oninput="value=value.replace(/[^\d]/g,'')"
+          show-word-limit
+          maxlength="10"
+        ></el-input>
       </el-form-item>
+      <!-- 对人员名称进行了校验 -->
       <el-form-item label="人员名称" prop="userName">
-        <el-input v-model="addForm.userName" placeholder="请输入人员名称"></el-input>
+        <el-input
+          v-model="addForm.userName"
+          placeholder="请输入人员名称"
+          show-word-limit
+          maxlength="10"
+          @input="nameCheck"
+        ></el-input>
       </el-form-item>
       <!-- 单位下拉框 带筛选 -->
       <el-form-item label="单位" prop="unit">
@@ -18,28 +33,20 @@
           ></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="邮箱">
+      <!-- 邮箱的校验规则 自定义 -->
+      <el-form-item label="邮箱" prop="mail">
         <el-input v-model="addForm.mail" placeholder="请输入邮箱"></el-input>
       </el-form-item>
-      <el-form-item label="手机号">
-        <el-input
-          type="text"
-          onkeyup="value=value.replace(/[^\d]/g,'')"
-          maxlength="11"
-          v-model="addForm.mobile"
-          placeholder="请输入手机号"
-        ></el-input>
+      <!-- 手机号的校验规则 自定义 -->
+      <el-form-item label="手机号" prop="mobile">
+        <el-input type="tel" maxlength="11" v-model="addForm.mobile" placeholder="请输入手机号"></el-input>
       </el-form-item>
-      <el-form-item label="办公电话">
-        <el-input
-          type="text"
-          onkeyup="value=value.replace(/[^\d]/g,'')"
-          v-model="addForm.officePhone"
-          placeholder="请输入办公电话"
-        ></el-input>
+      <!-- 办公电话的校验规则 自定义 -->
+      <el-form-item label="办公电话" prop="officePhone">
+        <el-input v-model="addForm.officePhone" placeholder="请输入办公电话"></el-input>
       </el-form-item>
       <el-form-item label="职务">
-        <el-input v-model="addForm.job" placeholder="请输入职务"></el-input>
+        <el-input v-model="addForm.job" placeholder="请输入职务" show-word-limit maxlength="10"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('addForm')">立即添加</el-button>
@@ -52,23 +59,12 @@
 <script>
 export default {
   data() {
-    var checkPhone = (rule, value, callback) => {
-      const phoneReg = /^1[3|4|5|7|8][0-9]{9}$/;
-      setTimeout(() => {
-        // Number.isInteger是es6验证数字是否为整数的方法,但是我实际用的时候输入的数字总是识别成字符串
-        // 所以我就在前面加了一个+实现隐式转换
-        if (!Number.isInteger(+value)) {
-          callback(new Error("请输入数字值"));
-        } else {
-          if (phoneReg.test(value)) {
-            callback();
-          } else {
-            callback(new Error("电话号码格式不正确"));
-          }
-        }
-      }, 100);
-    };
+    // 自定义的邮箱校验规则
     var checkEmail = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
       const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
       setTimeout(() => {
         if (mailReg.test(value)) {
@@ -78,10 +74,33 @@ export default {
         }
       }, 100);
     };
-    var checkEno = (rule, value, callback) => {
+    // 自定义 手机号校验规则
+    var checkPhone = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
+      const phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
       setTimeout(() => {
-        if (!Number.isInteger(+value)) {
-          callback(new Error("请输入数字值"));
+        if (phoneReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的手机号"));
+        }
+      }, 100);
+    };
+    // 自定义办公电话校验规则
+    var checkTel = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
+      const telReg = /^((0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/;
+      setTimeout(() => {
+        if (telReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的电话号"));
         }
       }, 100);
     };
@@ -183,67 +202,48 @@ export default {
           label: "体育教学部"
         }
       ],
-      // 职务列表
-      jobList: [
-        {
-          value: "教授",
-          label: "教授"
-        },
-        {
-          value: "讲师",
-          label: "讲师"
-        },
-        {
-          value: "导员",
-          label: "导员"
-        },
-        {
-          value: "职员",
-          label: "职员"
-        }
-      ],
       rules: {
+        // 人员名称
         userName: [
           { required: true, message: "请输入人员名称", trigger: "blur" }
         ],
-        mail: [{ validator: checkEmail, trigger: "blur" }],
-        eno: [
-          {
-            required: true,
-            validator: checkEno,
-            trigger: "blur"
-          }
-        ],
-        officePhone: [{ message: "请输入手机号", trigger: "blur" }],
-        mobile: [{ validator: checkPhone, trigger: "blur" }],
+        // 职工号
+        eno: [{ required: true, message: "请输入职工号", trigger: "blur" }],
+        // 单位
         unit: [{ required: true, message: "请选择单位", trigger: "change" }],
-        job: [{ message: "请输入职务", trigger: "change" }]
+        mail: [{ validator: checkEmail, trigger: "blur" }],
+        mobile: [{ validator: checkPhone, trigger: "blur" }],
+        officePhone: [{ validator: checkTel, trigger: "blur" }]
       }
     };
   },
   methods: {
+    // 作者姓名检测 只能输入英文 汉字和·
+    nameCheck() {
+      this.addForm.userName = this.addForm.userName.replace(
+        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
+        ""
+      );
+    },
     // 提交表单
     submitForm(addForm) {
-      console.log("aaaa");
-
-      // this.$refs['addForm'].validate(valid => {
-      //   console.log(valid);
-
-      //   if (valid) {
-      // 验证通过 发起添加用户的请求
-      this.$axios.post("/v1/user/info/create.vpage", this.addForm).then(res => {
-        if (res.success == true) {
-          // 添加成功，回到列表界面
-          this.$router.push(
-            "/user-list/" + this.addForm.roleType.toLowerCase()
-          );
+      this.$refs["addForm"].validate(valid => {
+        if (valid) {
+          // 验证通过 发起添加用户的请求
+          this.$axios
+            .post("/v1/user/info/create.vpage", this.addForm)
+            .then(res => {
+              if (res.success == true) {
+                // 添加成功，回到列表界面
+                this.$router.push(
+                  "/user-list/" + this.addForm.roleType.toLowerCase()
+                );
+              }
+            });
+        } else {
+          return false;
         }
       });
-      //   } else {
-      //     alert("验证失败");
-      //     return false;
-      //   }
-      // });
     },
     // 重置表单
     resetForm(formName) {

@@ -8,17 +8,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件题目">
-              <el-input v-model="nowState.title"></el-input>
+              <el-input v-model="nowState.title" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审稿人">
-              <el-input v-model="nowState.approveName"></el-input>
+              <el-input v-model="nowState.approveName" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑人">
-              <el-input v-model="nowState.editorName"></el-input>
+              <el-input v-model="nowState.editorName" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -26,7 +26,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="作者">
-              <el-input v-model="nowState.docAuthor"></el-input>
+              <el-input v-model="nowState.docAuthor" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -44,17 +44,17 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="提交时间">
-              <el-input v-model="nowState.submitTime"></el-input>
+              <el-input v-model="nowState.submitTime" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="审批时间">
-              <el-input v-model="nowState.approveTime"></el-input>
+              <el-input v-model="nowState.approveTime" disabled></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑时间">
-              <el-input v-model="nowState.editTime"></el-input>
+              <el-input v-model="nowState.editTime" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -62,7 +62,7 @@
         <el-row :gutter="20">
           <el-col :span="8">
             <el-form-item label="稿件状态">
-              <el-input v-model="status[nowState.status]"></el-input>
+              <el-input v-model="status[nowState.status]" disabled></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -118,11 +118,9 @@ export default {
         // 稿件状态
         status: "",
         // 审批意见
-        approveSuggestion:
-          "我是审批意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的",
+        approveSuggestion: "",
         // 编辑意见
-        editSuggestion:
-          "我是编辑意见，我可能会很长，你猜我有多长，我也不知道我有多长，怎么办呢？你说我会不会自动换行呢？我会的"
+        editSuggestion: ""
       },
       // 表格数据
       tableData: [],
@@ -192,7 +190,7 @@ export default {
     scanApprove() {
       this.suggestion = this.nowState.approveSuggestion;
       if (this.suggestion == null) {
-        this.suggestion ="暂无意见";
+        this.suggestion = "暂无意见";
       }
       this.dialogVisible = true;
     },
@@ -200,45 +198,42 @@ export default {
     scanedit() {
       this.suggestion = this.nowState.editSuggestion;
       if (this.suggestion == null) {
-        this.suggestion ="暂无意见";
+        this.suggestion = "暂无意见";
       }
       this.dialogVisible = true;
     },
     // 查看稿件详细状态信息
     scanDetail(id) {
-      this.$axios
-        .get("/v1/contribution/detail.vpage?id=" + id)
-        .then(res => {
-          if (res.success) {
-            // 从后端返回的数据中拿出自己需要的数据
-            this.nowState = JSON.parse(
-              JSON.stringify(res.data, [
-                "title",
-                "approveName",
-                "editorName",
-                "docAuthor",
-                "submitTime",
-                "approveTime",
-                "editTime",
-                "status",
-                "approveSuggestion",
-                "editSuggestion"
-              ])
-            );
-            this.tableData = res.data.logList;
-            this.total = res.data.logList.length;
-            console.log(this.tableData);
+      this.$axios.get("/v1/contribution/detail.vpage?id=" + id).then(res => {
+        if (res.success) {
+          // 从后端返回的数据中拿出自己需要的数据
+          this.nowState = JSON.parse(
+            JSON.stringify(res.data, [
+              "title",
+              "approveName",
+              "editorName",
+              "docAuthor",
+              "submitTime",
+              "approveTime",
+              "editTime",
+              "status",
+              "approveSuggestion",
+              "editSuggestion"
+            ])
+          );
+          this.tableData = res.data.logList;
 
+          if (this.tableData != null) {
             this.tableData = this.translateState(this.tableData);
-
-            // this.nowState = this.translateState(this.nowState);
+            this.total = res.data.logList.length;
           }
-        });
+        }
+      });
     },
     //将数据中的状态从英文改成中文
     translateState(data) {
       console.log(data);
-      
+
       data.map(item => {
         if (item.status == "DRAFT") {
           item.status = "草稿";

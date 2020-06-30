@@ -1,5 +1,7 @@
 <template>
   <div style="positioin: relative;">
+    <!-- 加载Loading的组件 -->
+    <loading :isShow="isShow"></loading>
     <div id="pdf-content"></div>
     <div class="btnArea">
       <el-button type="primary" v-if="showApprove" @click="approveNews">审批稿件</el-button>
@@ -14,7 +16,6 @@
       :dialogTitle="dialogTitle"
       :dialogVisible="dialogVisible"
       :approvalForm="approvalForm"
-      :isAble="isAble"
       @cancel="cancel"
       @ok="ok"
       @pushId="getId"
@@ -26,7 +27,6 @@
 // 导入组件
 import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 import commonDialog from "../../components/dialog/common-dialog";
-
 export default {
   components: {
     ElImageViewer,
@@ -34,6 +34,8 @@ export default {
   },
   data() {
     return {
+      // 控制 加载组件 是否显示
+      isShow: true,
       // pdf预览地址
       pdfUrl: "",
       // 图片预览地址
@@ -42,8 +44,6 @@ export default {
       showViewer: false,
       // 需要下载的文章标题
       sectionTitle: "",
-      // 下载提示框是否显示
-      // dialogvisible: false,
       // 控制审批稿件按钮是否显示
       showApprove: true,
       // 控制追加按钮是否显示
@@ -57,8 +57,7 @@ export default {
       // 控制 对话框 是否显示
       dialogVisible: false,
       // 对话框显示内容
-      approvalForm: [],
-      isAble: true
+      approvalForm: []
     };
   },
   methods: {
@@ -71,6 +70,7 @@ export default {
           this.$nextTick(function() {
             this.$pdf.embed(`${this.pdfUrl}`, "#pdf-content");
           });
+          this.isShow = false;
         }
       });
     },
@@ -93,11 +93,10 @@ export default {
               this.approvalForm.splice(0, this.approvalForm.length);
             }
             this.approvalForm.push({
-              type: "input",
+              type: "textarea",
               label: "审批意见",
               title: res.data
             });
-            this.isAble = false;
           }
         });
     },
@@ -116,11 +115,18 @@ export default {
         label: "稿件名称",
         title: this.title
       });
-      this.isAble = true;
     },
     // 显示图片预览
     showPictures() {
-      this.showViewer = true;
+      if (this.srcList.length == 0) {
+        this.$message({
+          showClose: true,
+          message: "作者未上传图片！",
+          type: "warning"
+        });
+      } else {
+        this.showViewer = true;
+      }
     },
     // 关闭图片预览
     closeViewer() {
