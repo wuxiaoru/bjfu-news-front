@@ -86,6 +86,10 @@ const routes = [
   {
     path: '/improve-info',
     component: () => import('../pages/improve-info')
+  },
+  {
+    path: '/roleSelection',
+    component: () => import('../pages/roleSelection.vue')
   }
 ]
 
