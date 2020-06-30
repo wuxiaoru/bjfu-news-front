@@ -119,11 +119,7 @@ export default {
     // 显示图片预览
     showPictures() {
       if (this.srcList.length == 0) {
-        this.$message({
-          showClose: true,
-          message: "作者未上传图片！",
-          type: "warning"
-        });
+        this.$message.warning("作者未上传图片！");
       } else {
         this.showViewer = true;
       }

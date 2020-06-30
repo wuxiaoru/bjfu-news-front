@@ -1,5 +1,5 @@
 // 在官方的axios的基础上封装一个添加拦截器的axios
-import axios from 'axios'
+// import axios from 'axios'
 // 引入Vuex
 import store from '../src/store'
 // 引入路由
