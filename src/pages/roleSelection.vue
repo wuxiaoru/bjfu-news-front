@@ -14,16 +14,16 @@
       <el-main>
         <el-card>
           <div class="role">
-            <div class="roleCard">
+            <div class="roleCard" @click="getUserInfo(1)">
               <p>投稿人</p>
             </div>
-            <div class="roleCard">
+            <div class="roleCard" @click="getUserInfo(2)">
               <p>审批人</p>
             </div>
-            <div class="roleCard">
+            <div class="roleCard" @click="getUserInfo(3)">
               <p>编辑人</p>
             </div>
-            <div class="roleCard">
+            <div class="roleCard" @click="getUserInfo(4)">
               <p>管理员</p>
             </div>
           </div>
@@ -38,7 +38,32 @@ export default {
   data() {
     return {};
   },
-  methods: {}
+  methods: {
+    getUserInfo(index) {
+      var UserId = "";
+      switch (index) {
+        case 1:
+          localStorage.setItem("UserId", 1);
+          localStorage.setItem("RoleType", "contributor");
+          break;
+        case 2:
+          localStorage.setItem("UserId", 2);
+          localStorage.setItem("RoleType", "approve");
+          break;
+        case 3:
+          localStorage.setItem("UserId", 3);
+          localStorage.setItem("RoleType", "editor");
+          break;
+        case 4:
+          localStorage.setItem("UserId", 4);
+          localStorage.setItem("RoleType", "admin");
+          break;
+        default:
+          break;
+      };
+      this.$router.push("/home-main");
+    }
+  }
 };
 </script>
 
