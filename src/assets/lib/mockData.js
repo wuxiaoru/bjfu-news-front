@@ -1,6 +1,7 @@
 const navData = [{
   "data": [{
     "id": 101,
+    "type": 'contributor',
     "authName": "新闻投稿人",
     "path": null,
     "children": [
@@ -19,6 +20,7 @@ const navData = [{
     ]
   }, {
     "id": 106,
+    "type": 'approve',
     "authName": "新闻审批人",
     "path": null,
     "children": [
@@ -31,6 +33,7 @@ const navData = [{
     ]
   }, {
     "id": 111,
+    "type": 'editor',
     "authName": "新闻编辑人",
     "path": null,
     "children": [
@@ -43,6 +46,7 @@ const navData = [{
     ]
   }, {
     "id": 116,
+    "type": 'admin',
     "authName": "系统管理员",
     "path": null,
     "children": [
@@ -72,6 +76,5 @@ const navData = [{
       }
     ]
   }]
-
 }]
 export { navData }

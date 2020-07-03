@@ -177,7 +177,7 @@ export default {
       // 对话框显示内容
       approvalForm: [],
       // 登录的用户id
-      userId: 2,
+      userId: "",
       // 撤回稿件的id
       id: "",
       // 设置日期格式
@@ -310,7 +310,7 @@ export default {
     }
   },
   created() {
-    // this.userId = localStorage.getItem("approveId");
+    this.userId = localStorage.getItem("UserId");
     this.queryList();
   }
 };

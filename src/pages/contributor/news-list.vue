@@ -210,7 +210,6 @@ export default {
       pickerOptions: {
         disabledDate(time) {
           return time.getTime() > Date.now() + 24 * 60 * 60 * 1000;
-          // return time.getTime() > Date.now() - 8.64e6;
         }
       }
     };
@@ -442,7 +441,7 @@ export default {
     }
   },
   async created() {
-    // this.userId = localStorage.getItem("userId");
+    this.userId = localStorage.getItem("UserId");
     await this.queryList();
     await this.getApproveList();
   }

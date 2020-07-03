@@ -18,7 +18,12 @@
         :default-active="activePath"
       >
         <!-- 一级菜单 -->
-        <el-submenu :index="item.id + ''" v-for="item in menulist" :key="item.id">
+        <el-submenu
+          :index="item.id + ''"
+          v-for="item in menulist"
+          :key="item.id"
+          v-show="item.type == getUserType"
+        >
           <!-- 一级菜单的模板区域 -->
           <template slot="title">
             <!-- 图标 -->
@@ -100,6 +105,11 @@ export default {
       // 被激活的路径
       activePath: ""
     };
+  },
+  computed: {
+    getUserType() {
+      return localStorage.getItem("RoleType");
+    }
   },
   methods: {
     // 控制左侧菜单是否展开

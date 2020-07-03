@@ -125,9 +125,9 @@ export default {
         // 备注
         note: "",
         // 投稿人id
-        userId: 1,
+        userId: "",
         // 审稿人id
-        approveId: 1
+        approveId: ""
       },
       rules: {
         title: [{ required: true, message: "请输入稿件题目", trigger: "blur" }],
@@ -281,6 +281,7 @@ export default {
     }
   },
   created() {
+    this.manuscriptForm.userId = localStorage.getItem("UserId");
     // 获取所有的审批人列表
     this.getApproveList();
   }
