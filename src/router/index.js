@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/home-main'
+    redirect: '/roleSelection'
   },
   {
     path: '/home-main',
