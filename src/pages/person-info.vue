@@ -4,23 +4,22 @@
       <span>个人信息</span>
       <el-button style="float: right; padding: 3px 0" type="text" @click="goBack">返回</el-button>
     </div>
-      <el-form label-width="80px" :model="formLabelAlign">
-        <el-form-item label="工号">
-          <el-input v-model="formLabelAlign.id"></el-input>
-        </el-form-item>
-        <el-form-item label="用户姓名">
-          <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-        <el-form-item label="用户部门">
-          <el-select v-model="formLabelAlign.department" placeholder="请选择活动区域" style="width: 100%">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="用户职务">
-          <el-input v-model="formLabelAlign.job"></el-input>
-        </el-form-item>
-      </el-form>
+    <el-form label-width="80px" :model="formLabelAlign">
+      <el-form-item label="工号">
+        <el-input v-model="formLabelAlign.id" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="用户姓名">
+        <el-input v-model="formLabelAlign.name" disabled></el-input>
+      </el-form-item>
+      <!-- 单位下拉框 带筛选 -->
+      <el-form-item label="单位">
+        <el-input v-model="formLabelAlign.unit" disabled></el-input>
+      </el-form-item>
+      <el-form-item label="用户职务">
+        <el-input v-model="formLabelAlign.job"></el-input>
+      </el-form-item>
+    </el-form>
+    <!-- <el-button style="float:right" type="primary">保存</el-button> -->
   </el-card>
 </template>
 
@@ -33,15 +32,104 @@ export default {
         id: "",
         name: "",
         department: "",
-        job: ""
-      }
+        job: "",
+        unit: ""
+      },
+      // 单位列表
+      unitList: [
+        {
+          value: "林学院",
+          label: "林学院"
+        },
+        {
+          value: "水土保持学院",
+          label: "水土保持学院"
+        },
+        {
+          value: "生物科学与技术学院",
+          label: "生物科学与技术学院"
+        },
+        {
+          value: "园林学院",
+          label: "园林学院"
+        },
+        {
+          value: "经济管理学院",
+          label: "经济管理学院"
+        },
+        {
+          value: "工学院",
+          label: "工学院"
+        },
+        {
+          value: "材料科学与技术学院",
+          label: "材料科学与技术学院"
+        },
+        {
+          value: "人文社会科学学院",
+          label: "人文社会科学学院"
+        },
+        {
+          value: "外语学院",
+          label: "外语学院"
+        },
+        {
+          value: "信息学院",
+          label: "信息学院"
+        },
+        {
+          value: "理学院",
+          label: "理学院"
+        },
+        {
+          value: "生态与自然保护学院",
+          label: "生态与自然保护学院"
+        },
+        {
+          value: "环境科学与工程学院",
+          label: "环境科学与工程学院"
+        },
+        {
+          value: "艺术设计学院",
+          label: "艺术设计学院"
+        },
+        {
+          value: "马克思主义学院",
+          label: "马克思主义学院"
+        },
+        {
+          value: "草业与草原学院",
+          label: "草业与草原学院"
+        },
+        {
+          value: "继续教育学院",
+          label: "继续教育学院"
+        },
+        {
+          value: "国际学院",
+          label: "国际学院"
+        },
+        {
+          value: "体育教学部",
+          label: "体育教学部"
+        }
+      ]
     };
   },
   methods: {
-      // 点击返回按钮的时候跳转上一个界面
-      goBack() {
-          this.$router.go(-1)
-      }
+    // 点击返回按钮的时候跳转上一个界面
+    goBack() {
+      this.$router.go(-1);
+    }
+  },
+  created() {
+    this.formLabelAlign.unit = localStorage.getItem("UserUnit");
+    this.formLabelAlign.id = localStorage.getItem("UserEno");
+    this.formLabelAlign.name = localStorage.getItem("UserName");
+    this.formLabelAlign.job =
+      localStorage.getItem("UserJob") == "null"
+        ? ""
+        : localStorage.getItem("UserJob");
   }
 };
 </script>
@@ -59,5 +147,6 @@ export default {
 .box-card {
   width: 480px;
   margin: 100px auto;
+  // padding-bottom: 20px;
 }
 </style>

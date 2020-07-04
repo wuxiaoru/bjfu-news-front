@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/roleSelection'
+    redirect: '/login'
   },
   {
     path: '/home-main',
@@ -88,8 +88,8 @@ const routes = [
     component: () => import('../pages/improve-info')
   },
   {
-    path: '/roleSelection',
-    component: () => import('../pages/roleSelection.vue')
+    path: '/login',
+    component: () => import('../pages/login.vue')
   }
 ]
 

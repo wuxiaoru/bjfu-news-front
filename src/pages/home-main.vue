@@ -22,7 +22,7 @@
           :index="item.id + ''"
           v-for="item in menulist"
           :key="item.id"
-          v-show="item.type == getUserType"
+          v-show="getUserType.indexOf(item.type) != -1"
         >
           <!-- 一级菜单的模板区域 -->
           <template slot="title">
@@ -61,7 +61,7 @@
           <div class="box">
             <span class="front">
               <i class="el-icon-s-custom"></i>
-              吴晓如
+              {{UserName}}
               <!-- <i class="el-icon-arrow-down"></i> -->
             </span>
             <span class="bottom" @click="toPerInfo">个人信息</span>
@@ -81,6 +81,7 @@
 export default {
   data() {
     return {
+      UserName: "",
       // 显示的标题名称
       headline: "新闻列表",
       // 控制左侧菜单是否展开
@@ -129,6 +130,7 @@ export default {
     }
   },
   created() {
+    this.UserName = localStorage.getItem("UserName");
     // 引入数据文件，获取数据的值并加以显示
     var data = require("../assets/lib/mockData.js");
     this.menulist = data.navData[0].data;
@@ -184,7 +186,7 @@ export default {
     .box {
       display: inline-block;
       position: relative;
-      width: 75px;
+      width: 110px;
       height: 36px;
       cursor: pointer;
       transform-style: preserve-3d;
