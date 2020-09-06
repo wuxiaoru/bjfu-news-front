@@ -103,6 +103,11 @@
             @click="recallNews(scope.row)"
             v-if="scope.row.status == '待审稿'"
           >撤回</el-button>
+           <el-button
+            type="danger"
+            size="mini"
+            @click="selectStatus(scope.row)"
+          >撤回</el-button>
         </template>
       </common-table>
       <!-- 分页区域 -->
@@ -428,6 +433,19 @@ export default {
         .then(res => {
           if (res.success == true) {
             this.approveList = res.data;
+          }
+        });
+    },
+    //查询状态
+    selectStatus() {
+      this.$axios
+        .get("/v1/news/enum.vpage")
+        .then(res => {
+          if (res.success == true) {
+            // 稿件删除成功，重新调用获取稿件列表的接口
+            this.stateList=res.data.status;
+          } else {
+            this.$message.error("删除稿件失败，请稍后再试");
           }
         });
     },

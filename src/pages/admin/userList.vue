@@ -137,6 +137,7 @@
 <script>
 import commonTable from "../../components/table/common-table";
 import commonDialog from "../../components/dialog/common-dialog";
+import global_ from "../../../utils/constant";
 export default {
   data() {
     // 自定义的邮箱校验规则
@@ -195,88 +196,7 @@ export default {
         userName: ""
       },
       // 单位列表
-      unitList: [
-        {
-          id: null,
-          name: ""
-        },
-        {
-          id: "林学院",
-          name: "林学院"
-        },
-        {
-          id: "水土保持学院",
-          name: "水土保持学院"
-        },
-        {
-          id: "生物科学与技术学院",
-          name: "生物科学与技术学院"
-        },
-        {
-          id: "园林学院",
-          name: "园林学院"
-        },
-        {
-          id: "经济管理学院",
-          name: "经济管理学院"
-        },
-        {
-          id: "工学院",
-          name: "工学院"
-        },
-        {
-          id: "材料科学与技术学院",
-          name: "材料科学与技术学院"
-        },
-        {
-          id: "人文社会科学学院",
-          name: "人文社会科学学院"
-        },
-        {
-          id: "外语学院",
-          name: "外语学院"
-        },
-        {
-          id: "信息学院",
-          name: "信息学院"
-        },
-        {
-          id: "理学院",
-          name: "理学院"
-        },
-        {
-          id: "生态与自然保护学院",
-          name: "生态与自然保护学院"
-        },
-        {
-          id: "环境科学与工程学院",
-          name: "环境科学与工程学院"
-        },
-        {
-          id: "艺术设计学院",
-          name: "艺术设计学院"
-        },
-        {
-          id: "马克思主义学院",
-          name: "马克思主义学院"
-        },
-        {
-          id: "草业与草原学院",
-          name: "草业与草原学院"
-        },
-        {
-          id: "继续教育学院",
-          name: "继续教育学院"
-        },
-        {
-          id: "国际学院",
-          name: "国际学院"
-        },
-        {
-          id: "体育教学部",
-          name: "体育教学部"
-        }
-      ],
+      unitList: global_.unit,
       // 表格数据
       tableData: [],
       // 表格头数据

@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import global_ from '../../utils/constant'
 export default {
   data() {
     return {
@@ -36,84 +37,7 @@ export default {
         unit: ""
       },
       // 单位列表
-      unitList: [
-        {
-          value: "林学院",
-          label: "林学院"
-        },
-        {
-          value: "水土保持学院",
-          label: "水土保持学院"
-        },
-        {
-          value: "生物科学与技术学院",
-          label: "生物科学与技术学院"
-        },
-        {
-          value: "园林学院",
-          label: "园林学院"
-        },
-        {
-          value: "经济管理学院",
-          label: "经济管理学院"
-        },
-        {
-          value: "工学院",
-          label: "工学院"
-        },
-        {
-          value: "材料科学与技术学院",
-          label: "材料科学与技术学院"
-        },
-        {
-          value: "人文社会科学学院",
-          label: "人文社会科学学院"
-        },
-        {
-          value: "外语学院",
-          label: "外语学院"
-        },
-        {
-          value: "信息学院",
-          label: "信息学院"
-        },
-        {
-          value: "理学院",
-          label: "理学院"
-        },
-        {
-          value: "生态与自然保护学院",
-          label: "生态与自然保护学院"
-        },
-        {
-          value: "环境科学与工程学院",
-          label: "环境科学与工程学院"
-        },
-        {
-          value: "艺术设计学院",
-          label: "艺术设计学院"
-        },
-        {
-          value: "马克思主义学院",
-          label: "马克思主义学院"
-        },
-        {
-          value: "草业与草原学院",
-          label: "草业与草原学院"
-        },
-        {
-          value: "继续教育学院",
-          label: "继续教育学院"
-        },
-        {
-          value: "国际学院",
-          label: "国际学院"
-        },
-        {
-          value: "体育教学部",
-          label: "体育教学部"
-        }
-      ]
+      unitList:global_.unit
     };
   },
   methods: {

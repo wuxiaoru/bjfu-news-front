@@ -20,6 +20,7 @@
     "@vue/cli-plugin-router": "~4.3.0",
     "@vue/cli-plugin-vuex": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
+    "cache-loader": "^4.1.0",
     "compression-webpack-plugin": "^4.0.0",
     "less": "^3.11.1",
     "less-loader": "^6.1.0",
