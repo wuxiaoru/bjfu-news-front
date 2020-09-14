@@ -14,8 +14,8 @@
         v-if="this.$route.params.isOverLook == false"
         @click="jumpToApproval"
       >编审稿件</el-button>
-      <el-button type="primary" @click="showPictures">附图预览</el-button>
-      <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
+      <picture-list :list="srcList" @click="changeActive"></picture-list>
+      <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="activeList" />
       <downloadsection-dialog
         @confirmDownload="confirmDownload"
         :sectionTitle="sectionTitle"
@@ -24,16 +24,22 @@
     </div>
   </div>
 </template>
-    <script>
+<script>
+import PictureList from "@/pages/editor/picture-list";
+export default {
+  components: {PictureList}
+}
 </script>
 <script>
 import downloadsectionDialog from "../../components/dialog/downloadsection-dialog.vue";
 // 导入组件
 import ElImageViewer from "element-ui/packages/image/src/image-viewer";
+import PictureList from "./picture-list.vue";
 export default {
   components: {
     downloadsectionDialog,
-    ElImageViewer
+    ElImageViewer,
+    PictureList,
   },
   data() {
     return {
@@ -45,7 +51,8 @@ export default {
       sectionTitle: "",
       //下载提示框是否显示
       ddialogvisible: false,
-      srcList: []
+      srcList: [],
+      activeList: [],
     };
   },
   methods: {
@@ -95,6 +102,15 @@ export default {
           "/v1/contribution/download.vpage?id=" +
           this.$route.params.id
       );
+    },
+    changeActive(item) {
+      this.activeList.splice(0, this.activeList.length);
+      this.activeList.push(item);
+      if (this.activeList.length == 0) {
+        this.$message.warning("作者未上传图片！");
+      } else {
+        this.showViewer = true;
+      }
     }
   },
   mounted() {

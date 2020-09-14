@@ -15,7 +15,8 @@ module.exports = {
       vue: 'Vue',
       'vue-router': 'VueRouter',
       axios: 'axios',
-    })
+    });
+    config.when(process.env.NODE_ENV === 'development', config => config.devtool('source-map'));
     // })
   },
   configureWebpack: {

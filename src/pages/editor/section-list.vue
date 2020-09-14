@@ -242,7 +242,7 @@ export default {
           break;
         case 2:
           this.TextStatus = "HIRE";
-          this.status = "辑部已录用";
+          this.status = "编辑部已录用";
           break;
         default:
           break;

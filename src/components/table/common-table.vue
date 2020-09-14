@@ -8,6 +8,7 @@
       :default-sort="{prop: 'date', order: 'descending'}"
       @cell-click="show"
       :cell-style="changeCellStyle"
+      :row-class-name="tableRowClassName"
     >
       <!-- 表格业务内容列 -->
       <template v-for="(item, index) in tableOption">
@@ -74,6 +75,15 @@ export default {
         );
       }
     },
+    tableRowClassName({row, rowIndex}) {
+      console.log(row);
+      if (row.status  === "审稿不过待修改" || row.status  === "编辑部已拒稿") {
+        return 'warning-row';
+      } else if (row.status  === "编辑部已录用") {
+        return 'success-row';
+      }
+      return '';
+    },
     // 更改某列的样式事件
     changeCellStyle(row, column, rowIndex, columnIndex) {
       // 列的label的名称
@@ -89,4 +99,11 @@ export default {
 </script>
 
 <style>
+ .el-table .warning-row {
+    color: #F56C6C;
+  }
+
+  .el-table .success-row {
+    color: #67C23A;
+  }
 </style>

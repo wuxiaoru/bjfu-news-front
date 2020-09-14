@@ -160,7 +160,9 @@ export default {
         { label: "待审稿", value: "APPROVAL_PENDING" },
         { label: "重投待审稿", value: "RE_APPROVAL_PENDING" },
         { label: "审稿通过等待编辑部处理", value: "APPROVE" },
-        { label: "审稿不过待修改", value: "APPROVAL_REJECTION" }
+        { label: "审稿不过待修改", value: "APPROVAL_REJECTION" },
+        { label: "编辑部已录用", value: "HIRE" },
+        { label: "编辑部已拒稿", value: "REJECTION" }
       ],
       // 查询表格的条件信息
       queryInfo: {
