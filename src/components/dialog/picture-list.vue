@@ -35,6 +35,10 @@ export default {
 .picture-list {
   width: 100px;
   height: 500px;
+  border-style:solid;
+  border-color:#98bf21;
+  border-width:3px;
+  margin-top:20px;
   overflow-y: auto;
   > div {
     width: 96px;

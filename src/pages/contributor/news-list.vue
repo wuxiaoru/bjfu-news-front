@@ -103,11 +103,6 @@
             @click="recallNews(scope.row)"
             v-if="scope.row.status == '待审稿'"
           >撤回</el-button>
-           <el-button
-            type="danger"
-            size="mini"
-            @click="selectStatus(scope.row)"
-          >撤回</el-button>
         </template>
       </common-table>
       <!-- 分页区域 -->

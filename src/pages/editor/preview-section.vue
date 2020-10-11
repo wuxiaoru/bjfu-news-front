@@ -25,16 +25,16 @@
   </div>
 </template>
 <script>
-import PictureList from "@/pages/editor/picture-list";
-export default {
-  components: {PictureList}
-}
+// import PictureList from "@/components/dialog/picture-list";
+// export default {
+//   components: {PictureList}
+// }
 </script>
 <script>
 import downloadsectionDialog from "../../components/dialog/downloadsection-dialog.vue";
 // 导入组件
 import ElImageViewer from "element-ui/packages/image/src/image-viewer";
-import PictureList from "./picture-list.vue";
+import PictureList from "../../components/dialog/picture-list.vue";
 export default {
   components: {
     downloadsectionDialog,

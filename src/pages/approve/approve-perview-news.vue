@@ -7,18 +7,20 @@
       <el-button type="primary" v-if="showApprove" @click="approveNews">审批稿件</el-button>
       <el-button type="primary" v-if="showAppend" @click="appendNews">追加意见</el-button>
       <el-button type="primary" @click="downloadSection">下载稿件</el-button>
-      <el-button type="primary" @click="showPictures">预览附图</el-button>
+      <el-button type="primary" @click="showPictures">下载附图</el-button>
+      <picture-list :list="srcList" @click="changeActive"></picture-list>
+      <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="activeList" />
     </div>
     <!-- 图片预览区 -->
-    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList" />
+<!--    <el-image-viewer v-if="showViewer" :on-close="closeViewer" :url-list="srcList"/>-->
     <!-- 点击按钮弹出的对话框 -->
     <common-dialog
-      :dialogTitle="dialogTitle"
-      :dialogVisible="dialogVisible"
-      :approvalForm="approvalForm"
-      @cancel="cancel"
-      @ok="ok"
-      @pushId="getId"
+        :dialogTitle="dialogTitle"
+        :dialogVisible="dialogVisible"
+        :approvalForm="approvalForm"
+        @cancel="cancel"
+        @ok="ok"
+        @pushId="getId"
     ></common-dialog>
   </div>
 </template>
@@ -27,10 +29,13 @@
 // 导入组件
 import ElImageViewer from "element-ui/packages/image/src/image-viewer";
 import commonDialog from "../../components/dialog/common-dialog";
+import PictureList from "../../components/dialog/picture-list.vue";
+
 export default {
   components: {
     ElImageViewer,
-    commonDialog
+    commonDialog,
+    PictureList
   },
   data() {
     return {
@@ -40,6 +45,7 @@ export default {
       pdfUrl: "",
       // 图片预览地址
       srcList: [],
+      activeList: [],
       // 显示查看器
       showViewer: false,
       // 需要下载的文章标题
@@ -67,7 +73,7 @@ export default {
         if (res.success == true) {
           this.pdfUrl = res.data.pdf;
           this.srcList = res.data.pic;
-          this.$nextTick(function() {
+          this.$nextTick(function () {
             this.$pdf.embed(`${this.pdfUrl}`, "#pdf-content");
           });
           this.isShow = false;
@@ -82,23 +88,23 @@ export default {
     appendNews() {
       // 去查询之前审批的意见
       this.$axios
-        .get("/v1/approve/suggestion.vpage?id=" + this.id)
-        .then(res => {
-          if (res.success == true) {
-            this.dialogTitle = "追加意见";
-            //下载提示框是否显示
-            this.dialogVisible = true;
-            // 如果对话框里面有内容，先清空
-            if (this.approvalForm.length != 0) {
-              this.approvalForm.splice(0, this.approvalForm.length);
+          .get("/v1/approve/suggestion.vpage?id=" + this.id)
+          .then(res => {
+            if (res.success == true) {
+              this.dialogTitle = "追加意见";
+              //下载提示框是否显示
+              this.dialogVisible = true;
+              // 如果对话框里面有内容，先清空
+              if (this.approvalForm.length != 0) {
+                this.approvalForm.splice(0, this.approvalForm.length);
+              }
+              this.approvalForm.push({
+                type: "textarea",
+                label: "审批意见",
+                title: res.data
+              });
             }
-            this.approvalForm.push({
-              type: "textarea",
-              label: "审批意见",
-              title: res.data
-            });
-          }
-        });
+          });
     },
     //下载稿件按钮
     downloadSection() {
@@ -116,12 +122,26 @@ export default {
         title: this.title
       });
     },
+    changeActive(item) {
+      this.activeList.splice(0, this.activeList.length);
+      this.activeList.push(item);
+      if (this.activeList.length == 0) {
+        this.$message.warning("作者未上传图片！");
+      } else {
+        this.showViewer = true;
+      }
+    },
     // 显示图片预览
     showPictures() {
       if (this.srcList.length == 0) {
         this.$message.warning("作者未上传图片！");
       } else {
-        this.showViewer = true;
+        window.open(
+            process.env.VUE_APP_Back +
+            "/v1/contribution/pic/download.vpage?id=" +
+            this.id
+        );
+        // this.showViewer = true;
       }
     },
     // 关闭图片预览
@@ -146,25 +166,25 @@ export default {
     // 追加意见
     append(suggest) {
       this.$axios
-        .post(
-          "/v1/approve/addSuggestion.vpage?id=" +
-            this.id +
-            "&suggestion=" +
-            suggest
-        )
-        .then(res => {
-          console.log(res);
-          if (res.success == true) {
-            this.$message.success("追加意见成功");
-          } else {
-            this.$message.error("追加意见失败，请稍后再试");
-          }
-        });
+          .post(
+              "/v1/approve/addSuggestion.vpage?id=" +
+              this.id +
+              "&suggestion=" +
+              suggest
+          )
+          .then(res => {
+            console.log(res);
+            if (res.success == true) {
+              this.$message.success("追加意见成功");
+            } else {
+              this.$message.error("追加意见失败，请稍后再试");
+            }
+          });
     },
     // 下载稿件
     download() {
       window.open(
-        process.env.VUE_APP_Back +
+          process.env.VUE_APP_Back +
           "/v1/contribution/download.vpage?id=" +
           this.id
       );
@@ -198,11 +218,13 @@ export default {
   left: 55%;
   transform: translate(-50%, -50%);
 }
+
 .btnArea {
   float: right;
   margin-right: 30px;
   width: 100px;
 }
+
 .el-button {
   margin-left: 0;
   margin-top: 10px;

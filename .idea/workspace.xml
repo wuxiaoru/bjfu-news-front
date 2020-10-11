@@ -33,12 +33,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d565ab9c-fb8c-4ea6-9589-5d55436a390c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/pages/editor/picture-list.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/table/common-table.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/table/common-table.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/approve/doc-list.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/approve/doc-list.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/approve/approve-perview-news.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/approve/approve-perview-news.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/contributor/news-list.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/contributor/news-list.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/editor/picture-list.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/dialog/picture-list.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/editor/preview-section.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/editor/preview-section.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/editor/section-list.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/editor/section-list.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vue.config.js" beforeDir="false" afterPath="$PROJECT_DIR$/vue.config.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/login.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +58,13 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
+    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/components/dialog" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -68,12 +74,22 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1600069422233</updated>
-      <workItem from="1600069424092" duration="4764000" />
+      <workItem from="1600069424092" duration="11593000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ORDER">
+      <list>
+        <option value="0" />
+        <option value="2" />
+        <option value="3" />
+        <option value="1" />
+      </list>
+    </option>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -91,5 +107,14 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="530" y="159" key="RollbackChangesDialog/0.0.1440.900@0.0.1440.900" timestamp="1600069481663" />
+    <state x="557" y="154" key="VCS.ChangeListViewerDialog" timestamp="1600159210972">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="557" y="154" key="VCS.ChangeListViewerDialog/0.0.1440.900@0.0.1440.900" timestamp="1600159210972" />
+    <state x="385" y="196" key="search.everywhere.popup" timestamp="1600391415888">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" key="search.everywhere.popup/0.0.1440.900/1440.41.1920.1080@0.0.1440.900" timestamp="1600391415888" />
+    <state x="385" y="196" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1600160010736" />
   </component>
 </project>
