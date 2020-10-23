@@ -1,6 +1,12 @@
 <template>
   <el-card>
-    <el-form :model="addForm" ref="addForm" :rules="rules" label-width="80px" class="addFrom">
+    <el-form
+      :model="addForm"
+      ref="addForm"
+      :rules="rules"
+      label-width="80px"
+      class="addFrom"
+    >
       <!-- 职工号只允许输入数字 -->
       <el-form-item label="职工号">
         <el-input v-model="addForm.eno" disabled></el-input>
@@ -17,7 +23,12 @@
       </el-form-item>
       <!-- 单位下拉框 带筛选 -->
       <el-form-item label="单位" prop="unit">
-        <el-select v-model="addForm.unit" filterable placeholder="请选择单位" style="width: 100%">
+        <el-select
+          v-model="addForm.unit"
+          filterable
+          placeholder="请选择单位"
+          style="width: 100%"
+        >
           <el-option
             v-for="(item, index) in unitList"
             :key="index"
@@ -32,17 +43,32 @@
       </el-form-item>
       <!-- 手机号的校验规则 自定义 -->
       <el-form-item label="手机号" prop="mobile">
-        <el-input type="tel" maxlength="11" v-model="addForm.mobile" placeholder="请输入手机号"></el-input>
+        <el-input
+          type="tel"
+          maxlength="11"
+          v-model="addForm.mobile"
+          placeholder="请输入手机号"
+        ></el-input>
       </el-form-item>
       <!-- 办公电话的校验规则 自定义 -->
       <el-form-item label="办公电话" prop="officePhone">
-        <el-input v-model="addForm.officePhone" placeholder="请输入办公电话"></el-input>
+        <el-input
+          v-model="addForm.officePhone"
+          placeholder="请输入办公电话"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="职务">
-        <el-input v-model="addForm.job" placeholder="请输入职务" show-word-limit maxlength="10"></el-input>
+      <el-form-item label="职务" prop="job">
+        <el-input
+          v-model="addForm.job"
+          placeholder="请输入职务"
+          show-word-limit
+          maxlength="10"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('addForm')">立即添加</el-button>
+        <el-button type="primary" @click="submitForm('addForm')"
+          >立即添加</el-button
+        >
         <el-button @click="resetForm('addForm')">重置</el-button>
       </el-form-item>
     </el-form>
@@ -50,7 +76,7 @@
 </template>
 
 <script>
-import global_ from '../../utils/constant'
+import global_ from "../../utils/constant";
 export default {
   data() {
     // 自定义的邮箱校验规则
@@ -115,21 +141,28 @@ export default {
         // 职务
         job: "",
         // 角色类型
-        roleType: "CONTRIBUTOR"
+        roleType: "CONTRIBUTOR",
       },
       // 单位列表
       unitList: global_.unit,
       rules: {
         mail: [{ validator: checkEmail, trigger: "blur" }],
-        mobile: [{ validator: checkPhone, trigger: "blur" }],
-        officePhone: [{ validator: checkTel, trigger: "blur" }],
+        mobile: [
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { validator: checkPhone, trigger: "blur" },
+        ],
+        officePhone: [
+          { required: true, message: "请输入办公电话", trigger: "blur" },
+          { validator: checkTel, trigger: "blur" },
+        ],
         // 单位
         unit: [{ required: true, message: "请选择单位", trigger: "change" }],
         // 人员名称
         userName: [
-          { required: true, message: "请输入人员名称", trigger: "blur" }
-        ]
-      }
+          { required: true, message: "请输入人员名称", trigger: "blur" },
+        ],
+        job: [{ required: true, message: "请输入职务", trigger: "blur" }],
+      },
     };
   },
   methods: {
@@ -142,12 +175,12 @@ export default {
     },
     // 提交表单
     submitForm(addForm) {
-      this.$refs["addForm"].validate(valid => {
+      this.$refs["addForm"].validate((valid) => {
         if (valid) {
           // 验证通过 发起添加用户的请求
           this.$axios
             .post("/v1/user/info/create.vpage", this.addForm)
-            .then(res => {
+            .then((res) => {
               if (res.success == true) {
                 // 添加成功，回到列表界面
                 localStorage.setItem("RoleType", "CONTRIBUTOR");
@@ -165,13 +198,13 @@ export default {
     // 重置表单
     resetForm(formName) {
       this.$refs[formName].resetFields();
-    }
+    },
   },
   created() {
     this.addForm.unit = localStorage.getItem("UserUnit");
     this.addForm.eno = localStorage.getItem("UserEno");
     this.addForm.userName = localStorage.getItem("UserName");
-  }
+  },
 };
 </script>
 
