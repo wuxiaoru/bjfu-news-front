@@ -1,5 +1,6 @@
 <template>
   <el-container class="home-container">
+    
     <el-aside :width="menuCollapse ? '64px' : '200px'">
       <!-- logo区 -->
       <div class="logo">
@@ -56,17 +57,27 @@
         <!-- 头部标题 -->
         <span class="headline">{{headline}}</span>
         <!-- 右侧用户信息 -->
-        <div class="right-name">
-          <!-- <i class="el-icon-message-solid"></i> -->
+        <!-- <div class="right-name">
           <div class="box">
             <span class="front">
               <i class="el-icon-s-custom"></i>
               {{UserName}}
-              <!-- <i class="el-icon-arrow-down"></i> -->
             </span>
             <span class="bottom" @click="toPerInfo">个人信息</span>
           </div>
-        </div>
+        </div> -->
+
+        <el-dropdown class="right-name" @command="handleCommand">
+      <span class="el-dropdown-link">
+        <i class="el-icon-s-custom"></i>
+              {{UserName}}
+      </span>
+      <el-dropdown-menu slot="dropdown">
+        <el-dropdown-item command="info">个人信息</el-dropdown-item>
+        <el-dropdown-item command="exit">注销</el-dropdown-item>
+      </el-dropdown-menu>
+    </el-dropdown>
+
       </el-header>
       <!-- 主体内容区 -->
       <el-main>
@@ -104,8 +115,16 @@ export default {
         "120": "el-icon-document-add"
       },
       // 被激活的路径
-      activePath: ""
+      activePath: "",
     };
+  },
+  beforeRouteEnter (to, from, next) {
+    console.log('route');
+    console.log(to);
+    if(to.title){
+      this.headline = to.title;
+    }
+    next();
   },
   computed: {
     getUserType() {
@@ -126,79 +145,25 @@ export default {
       sessionStorage.setItem("activePath", activePath);
       sessionStorage.setItem("activeName", activeName);
       this.activePath = activePath;
-      this.headline = activeName;
+      // this.headline = activeName;
     },
+    // 处理下拉框事件
+    handleCommand(command) {
+      if (command === 'info') {
+        this.toPerInfo()
+      } else if(command === 'exit') {
+        localStorage.clear();
+        window.location.href = "http://cas.bjfu.edu.cn/cas/login?service=http://tgxt.bjfu.edu.cn/NewsManager/"
+      }
+    }
   },
-  created() {
+  mounted() {
     this.UserName = localStorage.getItem("UserName");
     // 引入数据文件，获取数据的值并加以显示
     var data = require("../assets/lib/mockData.js");
     this.menulist = data.navData[0].data;
     this.activePath = sessionStorage.getItem("activePath");
     this.headline = sessionStorage.getItem("activeName ");
-  },
-  mounted(){
-    // 获取地址栏上的ticket 如果有 需要调接口获取用户信息 没有ticket 去localstorage拿用户信息
-    if (this.$route.query.ticket) {
-      this.$axios
-      .get("/NewsManager?ticket="+ this.$route.query.ticket)
-      .then(res => {
-        if (res.success) {
-          localStorage.setItem("UserEno", this.loginForm.userCode);
-          localStorage.setItem("RoleType", res.role.toString());
-          if (res.userInfo != undefined) {
-            localStorage.setItem(
-              "UserId",
-              res.userInfo.id == undefined ? "" : res.userInfo.id
-            );
-            localStorage.setItem(
-              "UserEno",
-              res.userInfo.eno == undefined ? "" : res.userInfo.eno
-            );
-            localStorage.setItem(
-              "UserName",
-              res.userInfo.userName == undefined
-                ? ""
-                : res.userInfo.userName
-            );
-            localStorage.setItem(
-              "UserUnit",
-              res.userInfo.unit == undefined ? "" : res.userInfo.unit
-            );
-            localStorage.setItem(
-              "UserJob",
-              res.userInfo.job == undefined ? "" : res.userInfo.job
-            );
-            localStorage.setItem(
-              "UserMail",
-              res.userInfo.mail == undefined ? "" : res.userInfo.mail
-            );
-            localStorage.setItem(
-              "UserOfficePhone",
-              res.userInfo.officePhone == undefined
-                ? ""
-                : res.userInfo.officePhone
-            );
-            localStorage.setItem(
-              "UserMobile",
-              res.userInfo.mobile == undefined ? "" : res.userInfo.mobile
-            );
-          }
-          // 如果 res.role 为空，证明是新用户，需要跳转improve-info界面
-          if (res.role.length == 0) {
-            this.$router.push("/improve-info");
-          } else {
-            this.$router.push("/home-main");
-          }
-        }   
-      }); 
-    } else {
-      if (!localStorage.getItem('UserId')) {
-        window.location.href = "http://cas.bjfu.edu.cn/cas/login?service=http%3A%2F%2Ftgxt.bjfu.edu.cn%2FNewsManager%2F"
-      }
-    }
-
-      
   }
 };
 </script>

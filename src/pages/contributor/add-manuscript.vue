@@ -222,10 +222,7 @@ export default {
     // 获取审批人列表
     getApproveList() {
       this.$axios
-        .get(
-          "/v1/contribution/approve/list.vpage?userId=" +
-            this.manuscriptForm.userId
-        )
+        .get("/v1/contribution/approve/list.vpage")
         .then(res => {
           this.approvalList = res.data;
         });
