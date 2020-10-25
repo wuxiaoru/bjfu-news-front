@@ -27,12 +27,12 @@ export default {
               "UserEno",
               res.userInfo.eno == undefined ? "" : res.userInfo.eno
             );
-            // localStorage.setItem(
-            //   "UserName",
-            //   res.userInfo.userName == undefined
-            //     ? ""
-            //     : res.userInfo.userName
-            // );
+            localStorage.setItem(
+              "UserName",
+              res.userInfo.userName == undefined
+                ? ""
+                : res.userInfo.userName
+            );
             // localStorage.setItem(
             //   "UserUnit",
             //   res.userInfo.unit == undefined ? "" : res.userInfo.unit
