@@ -127,7 +127,7 @@ export default {
       sessionStorage.setItem("activeName", activeName);
       this.activePath = activePath;
       this.headline = activeName;
-    }
+    },
   },
   created() {
     this.UserName = localStorage.getItem("UserName");
@@ -136,6 +136,69 @@ export default {
     this.menulist = data.navData[0].data;
     this.activePath = sessionStorage.getItem("activePath");
     this.headline = sessionStorage.getItem("activeName ");
+  },
+  mounted(){
+    // 获取地址栏上的ticket 如果有 需要调接口获取用户信息 没有ticket 去localstorage拿用户信息
+    if (this.$route.query.ticket) {
+      this.$axios
+      .get("/NewsManager?ticket="+ this.$route.query.ticket)
+      .then(res => {
+        if (res.success) {
+          localStorage.setItem("UserEno", this.loginForm.userCode);
+          localStorage.setItem("RoleType", res.role.toString());
+          if (res.userInfo != undefined) {
+            localStorage.setItem(
+              "UserId",
+              res.userInfo.id == undefined ? "" : res.userInfo.id
+            );
+            localStorage.setItem(
+              "UserEno",
+              res.userInfo.eno == undefined ? "" : res.userInfo.eno
+            );
+            localStorage.setItem(
+              "UserName",
+              res.userInfo.userName == undefined
+                ? ""
+                : res.userInfo.userName
+            );
+            localStorage.setItem(
+              "UserUnit",
+              res.userInfo.unit == undefined ? "" : res.userInfo.unit
+            );
+            localStorage.setItem(
+              "UserJob",
+              res.userInfo.job == undefined ? "" : res.userInfo.job
+            );
+            localStorage.setItem(
+              "UserMail",
+              res.userInfo.mail == undefined ? "" : res.userInfo.mail
+            );
+            localStorage.setItem(
+              "UserOfficePhone",
+              res.userInfo.officePhone == undefined
+                ? ""
+                : res.userInfo.officePhone
+            );
+            localStorage.setItem(
+              "UserMobile",
+              res.userInfo.mobile == undefined ? "" : res.userInfo.mobile
+            );
+          }
+          // 如果 res.role 为空，证明是新用户，需要跳转improve-info界面
+          if (res.role.length == 0) {
+            this.$router.push("/improve-info");
+          } else {
+            this.$router.push("/home-main");
+          }
+        }   
+      }); 
+    } else {
+      if (!localStorage.getItem('UserId')) {
+        window.location.href = "http://cas.bjfu.edu.cn/cas/login?service=http%3A%2F%2Ftgxt.bjfu.edu.cn%2FNewsManager%2F"
+      }
+    }
+
+      
   }
 };
 </script>

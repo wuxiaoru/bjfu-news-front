@@ -40,6 +40,9 @@
 
 <script>
 export default {
+  mounted() {
+    this.getUserInfo();
+  },
   data() {
     return {
       // 表单登录内容
@@ -67,6 +70,7 @@ export default {
     resetContent() {
       this.$refs.loginFormRef.resetFields();
     },
+    
     login() {
       this.$refs.loginFormRef.validate(async value => {
         if (!value) {
