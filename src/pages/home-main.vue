@@ -118,11 +118,11 @@ export default {
       activePath: "",
     };
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     console.log('route');
-    console.log(to);
-    if(to.title){
-      this.headline = to.title;
+    console.log(to.meta.title);
+    if(to.meta.title){
+      this.headline = to.meta.title;
     }
     next();
   },
