@@ -12,7 +12,7 @@ axios.defaults.baseURL = process.env.VUE_APP_Back
 axios.interceptors.request.use(config => {
   // 判断token是否存在和是否需要token验证的路由
   if (localStorage.getItem('UserEno')) {
-    config.headers.eno = localStorage.getItem('UserEno')
+    config.headers.userId = localStorage.getItem('UserEno')
   };
   return config;
 })
