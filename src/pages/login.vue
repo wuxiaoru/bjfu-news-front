@@ -12,7 +12,7 @@ export default {
   created(){
     // 获取地址栏上的ticket 如果有 需要调接口获取用户信息 没有ticket 去localstorage拿用户信息
     if (this.$route.query.ticket) {
-      alert(this.$route.query.ticket)
+      // alert(this.$route.query.ticket)
       this.$axios
       .get("/?ticket="+ this.$route.query.ticket)
       .then(res => {
@@ -33,28 +33,28 @@ export default {
                 ? ""
                 : res.userInfo.userName
             );
-            // localStorage.setItem(
-            //   "UserUnit",
-            //   res.userInfo.unit == undefined ? "" : res.userInfo.unit
-            // );
-            // localStorage.setItem(
-            //   "UserJob",
-            //   res.userInfo.job == undefined ? "" : res.userInfo.job
-            // );
-            // localStorage.setItem(
-            //   "UserMail",
-            //   res.userInfo.mail == undefined ? "" : res.userInfo.mail
-            // );
-            // localStorage.setItem(
-            //   "UserOfficePhone",
-            //   res.userInfo.officePhone == undefined
-            //     ? ""
-            //     : res.userInfo.officePhone
-            // );
-            // localStorage.setItem(
-            //   "UserMobile",
-            //   res.userInfo.mobile == undefined ? "" : res.userInfo.mobile
-            // );
+            localStorage.setItem(
+              "UserUnit",
+              res.userInfo.unit == undefined ? "" : res.userInfo.unit
+            );
+            localStorage.setItem(
+              "UserJob",
+              res.userInfo.job == undefined ? "" : res.userInfo.job
+            );
+            localStorage.setItem(
+              "UserMail",
+              res.userInfo.mail == undefined ? "" : res.userInfo.mail
+            );
+            localStorage.setItem(
+              "UserOfficePhone",
+              res.userInfo.officePhone == undefined
+                ? ""
+                : res.userInfo.officePhone
+            );
+            localStorage.setItem(
+              "UserMobile",
+              res.userInfo.mobile == undefined ? "" : res.userInfo.mobile
+            );
           }
           // 如果 res.role 为空，证明是新用户，需要跳转improve-info界面
           if (res.role.length == 0) {
