@@ -42,8 +42,8 @@
                 <el-option
                   v-for="(item, index) in unitList"
                   :key="index"
-                  :label="item.name"
-                  :value="item.id"
+                  :label="item.label"
+                  :value="item.value"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -104,12 +104,12 @@
           <!-- 单位下拉框 带筛选 -->
           <el-form-item label="单位" prop="unit">
             <el-select v-model="editForm.unit" filterable placeholder="请选择单位" style="width: 100%">
-              <el-option
-                v-for="(item, index) in unitList"
-                :key="index"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
+               <el-option
+                   v-for="(item, index) in unitList"
+                   :key="index"
+                   :label="item.label"
+                   :value="item.value" >
+                </el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="邮箱" prop="mail">
@@ -323,6 +323,7 @@ export default {
       this.dialogTitle = "确认删除信息";
       this.dialogVisible = true;
       this.id = row.id;
+      this.roleType=row.roleType
       // 如果对话框里面有内容，先清空
       if (this.approvalForm.length != 0) {
         this.approvalForm.splice(0, this.approvalForm.length);
@@ -390,9 +391,9 @@ export default {
     // 删除的接口
     delete() {
       // 确认删除
-      this.$axios.post("/v1/user/info/delete.vpage?id=" + this.id).then(res => {
+      this.$axios.post("/v1/user/info/delete.vpage?id=" + this.id + "&roleType=" + this.roleType).then(res => {
         if (res.success == false) {
-          this.$message.error("删除用户失败，请稍后再试");
+          this.$message.error(res.info);
         } else if (res.success == true) {
           // 删除用户成功，重新查询用户列表
           this.queryList();

@@ -12,17 +12,12 @@ export default {
   created(){
     // 获取地址栏上的ticket 如果有 需要调接口获取用户信息 没有ticket 去localstorage拿用户信息
     if (this.$route.query.ticket) {
-      // alert(this.$route.query.ticket)
       this.$axios
       .get("/?ticket="+ this.$route.query.ticket)
       .then(res => {
         if (res.success) {
           localStorage.setItem("RoleType", res.role.toString());
           if (res.userInfo != undefined) {
-            // localStorage.setItem(
-            //   "UserId",
-            //   res.userInfo.id == undefined ? "" : res.userInfo.id
-            // );
             localStorage.setItem(
               "UserEno",
               res.userInfo.eno == undefined ? "" : res.userInfo.eno

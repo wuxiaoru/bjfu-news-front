@@ -71,7 +71,7 @@
         <el-button
           :class="searchType == 0 ? 'el-button-focus' : ''"
           @click="changeSearchType(0)"
-        >已审核待编辑处理</el-button>
+        >新稿件</el-button>
         <el-button @click="changeSearchType(1)">已拒稿</el-button>
         <el-button @click="changeSearchType(2)">已录用</el-button>
       </div>

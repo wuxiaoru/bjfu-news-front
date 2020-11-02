@@ -78,17 +78,30 @@
             <el-col :span="6" v-if="showSaveBtn">
               <el-button type="primary" @click="saveForm('manuscriptForm')">存为草稿</el-button>
             </el-col>
+            <!-- <el-col :span="6" v-if="showSubmitDraftBtn">
+              <el-button type="success" @click="submitDraftForm('manuscriptForm')">提交稿件</el-button>
+            </el-col> -->
             <el-col :span="6" v-if="showSubmitBtn">
               <el-button type="success" @click="submitForm('manuscriptForm')">提交稿件</el-button>
             </el-col>
           </el-row>
         </el-form-item>
       </el-form>
+       <!-- 点击按钮弹出的对话框 -->
+      <!-- <common-dialog
+        :dialogTitle="dialogTitle"
+        :dialogVisible="dialogVisible"
+        :approvalForm="approvalForm"
+        @cancel="cancel"
+        @ok="ok"
+        @pushId="getId"
+      ></common-dialog> -->
     </el-card>
   </div>
 </template>
 
 <script>
+// import commonDialog from "../../components/dialog/common-dialog";
 export default {
   data() {
     return {
@@ -112,9 +125,11 @@ export default {
         // 备注
         note: "",
         // 投稿人id
-        userId: 1,
-        // 审稿人id
-        approveId: 1
+        // userId: "",
+        // // 审稿人id
+        // approveId: "",
+            // 审批人列表
+        // approvalList: [],
       },
       rules: {
         title: [{ required: true, message: "请输入稿件题目", trigger: "blur" }],
@@ -129,10 +144,14 @@ export default {
       showSaveBtn: true,
       // 控制提交稿件的按钮是否显示
       showSubmitBtn: true,
+       //控制草稿的提交稿件的按钮是否显示
+      // showSubmitDraftBtn:true,
       // 临时存储上传的图片地址
       picUrlTmp: [],
       // 临时存储上传的图片名称
-      picTitleTmp: []
+      picTitleTmp: [],
+       // 对话框显示内容
+      // approvalForm: [],
     };
   },
   methods: {
@@ -188,6 +207,43 @@ export default {
         }
       });
     },
+    // submitDraftForm(formName) {
+    //   this.$refs[formName].validate(valid => {
+    //     if (valid) {
+    //       // 弹出的对话框的标题
+    //       this.dialogTitle = "选择审批人";
+    //       // 让对话框显示
+    //       this.dialogVisible = true;
+    //       // 如果对话框里面有内容，先清空
+    //       // if (this.approvalForm.length != 0) {
+    //       //   this.approvalForm.splice(0, this.approvalForm.length);
+    //       // }
+    //       this.approvalForm.push(
+    //         {
+    //           type: "input",
+    //           label: "稿件题目",
+    //           title: this.manuscriptForm.title
+    //         },
+    //         {
+    //           type: "select",
+    //           label: "选择审稿人",
+    //           approval: "",
+    //           option: this.approvalList
+    //         }
+    //       );
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
+    //  // 获取审批人列表
+    // getApproveList() {
+    //   this.$axios
+    //     .get("/v1/contribution/approve/list.vpage")
+    //     .then(res => {
+    //       this.approvalList = res.data;
+    //     });
+    // },
     // 存为草稿
     saveForm(formName) {
       this.$refs[formName].validate(valid => {
@@ -247,12 +303,15 @@ export default {
     if (this.$route.params.id !== undefined) {
       this.scanDetail(this.$route.params.id);
       this.manuscriptForm.id = this.$route.params.id;
+      // this.getApproveList;
     }
 
     if (this.$route.params.status === "草稿") {
       this.showSubmitBtn = false;
+      // this.showSubmitDraftBtn=true;
     } else if (this.$route.params.status === "审稿不过待修改") {
       this.showSaveBtn = false;
+      // this.showSubmitDraftBtn=false;
     }
   }
 };

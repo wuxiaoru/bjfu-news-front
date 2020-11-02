@@ -386,7 +386,6 @@ export default {
         this.searchForm.date = [];
       }
       const body = {
-        userId: this.userId,
         docAuthor: this.searchForm.docAuthor,
         title: this.searchForm.title,
         status: this.searchForm.status,
@@ -424,7 +423,7 @@ export default {
     // 获取所有的审稿人列表
     getApproveList() {
       this.$axios
-        .get("/v1/contribution/approve/list.vpage?userId=" + this.userId)
+        .get("/v1/contribution/approve/list.vpage")
         .then(res => {
           if (res.success == true) {
             this.approveList = res.data;
@@ -454,7 +453,7 @@ export default {
     }
   },
   async created() {
-    this.userId = localStorage.getItem("UserId");
+    // this.userId = localStorage.getItem("UserId");
     await this.queryList();
     await this.getApproveList();
   }
