@@ -231,6 +231,10 @@ export default {
               item.status = "审批通过等待编辑部处理";
             } else if (item.status == "APPROVAL_REJECTION") {
               item.status = "审批不过待修改";
+            }else if(item.status == "HIRE"){
+              item.status = "已录用";
+            } else if(item.status == "REJECTION"){
+              item.status = "已拒稿";
             }
             return item;
           });

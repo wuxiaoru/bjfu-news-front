@@ -6,3 +6,16 @@
 
 <style>
 </style>
+
+<script>
+export default {
+	name: "app",
+	mounted(){
+	 window.onbeforeunload = function (e) {
+        var storage = window.localStorage;
+        storage.clear()
+      }
+	}
+}
+ 
+</script>

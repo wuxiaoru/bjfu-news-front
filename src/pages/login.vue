@@ -15,7 +15,9 @@ export default {
       this.$axios
       .get("/?ticket="+ this.$route.query.ticket)
       .then(res => {
+        console.log(res)
         if (res.success) {
+          console.log(res.userInfo)
           localStorage.setItem("RoleType", res.role.toString());
           if (res.userInfo != undefined) {
             localStorage.setItem(

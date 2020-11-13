@@ -43,20 +43,20 @@ export default {
       var UserId = "";
       switch (index) {
         case 1:
-          localStorage.setItem("UserId", 1);
-          localStorage.setItem("RoleType", "contributor");
+          // localStorage.setItem("UserId", 1);
+          // localStorage.setItem("RoleType", "contributor");
           break;
         case 2:
-          localStorage.setItem("UserId", 2);
-          localStorage.setItem("RoleType", "approve");
+          // localStorage.setItem("UserId", 2);
+          // localStorage.setItem("RoleType", "approve");
           break;
         case 3:
-          localStorage.setItem("UserId", 3);
-          localStorage.setItem("RoleType", "editor");
+          // localStorage.setItem("UserId", 3);
+          // localStorage.setItem("RoleType", "editor");
           break;
         case 4:
-          localStorage.setItem("UserId", 4);
-          localStorage.setItem("RoleType", "admin");
+          // localStorage.setItem("UserId", 4);
+          // localStorage.setItem("RoleType", "admin");
           break;
         default:
           break;
