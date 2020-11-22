@@ -153,7 +153,7 @@ export default {
         this.toPerInfo()
       } else if(command === 'exit') {
         localStorage.clear();
-        window.location.href = "http://cas.bjfu.edu.cn/cas/login?service=http://tgxt.bjfu.edu.cn/NewsManager/"
+        window.location.href = "http://cas.bjfu.edu.cn/cas/logout"
       }
     }
   },
