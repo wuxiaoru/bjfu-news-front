@@ -31,14 +31,14 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="审批意见">
-               <el-input v-model="nowState.approveSuggestion" disabled :type="textarea"></el-input>
-              <!-- <el-button plain style="width: 100%" @click="scanApprove">点击查看审批意见</el-button> -->
+               <!-- <el-input v-model="nowState.approveSuggestion" disabled :type="textarea"></el-input> -->
+              <el-button plain style="width: 100%" @click="scanApprove">点击查看审批意见</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="编辑意见">
-               <el-input v-model="nowState.editSuggestion" disabled :type="textarea"></el-input>
-              <!-- <el-button plain style="width: 100%" @click="scanedit">点击查看编辑意见</el-button> -->
+               <!-- <el-input v-model="nowState.editSuggestion" disabled :type="textarea"></el-input> -->
+              <el-button plain style="width: 100%" @click="scanedit">点击查看编辑意见</el-button>
             </el-form-item>
           </el-col>
         </el-row>
