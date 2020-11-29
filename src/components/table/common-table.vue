@@ -76,7 +76,6 @@ export default {
       }
     },
     tableRowClassName({row, rowIndex}) {
-      console.log(row);
       if (row.status  === "审稿不过待修改" || row.status  === "编辑部已拒稿") {
         return 'warning-row';
       } else if (row.status  === "编辑部已录用") {

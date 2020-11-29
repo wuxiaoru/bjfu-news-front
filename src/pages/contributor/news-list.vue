@@ -86,7 +86,7 @@
           <el-button
             type="info"
             size="mini"
-            v-if="scope.row.status == '草稿' || scope.row.status == '审稿不过待修改'"
+            v-if="scope.row.status == '草稿' || scope.row.status == '审稿不过待修改' || scope.row.status == '编辑部已拒稿'"
             @click="editNews(scope.row)"
           >编辑</el-button>
           <!-- 草稿 的可以删除 -->

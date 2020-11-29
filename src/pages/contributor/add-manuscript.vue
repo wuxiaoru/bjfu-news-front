@@ -17,7 +17,7 @@
             v-model="manuscriptForm.docAuthor"
             placeholder="请输入文章作者"
             show-word-limit
-            maxlength="10"
+            maxlength="20"
             @input="nameCheck"
           ></el-input>
         </el-form-item>
@@ -67,7 +67,7 @@
             v-model="manuscriptForm.picAuthor"
             placeholder="请输入图片作者"
             show-word-limit
-            maxlength="10"
+            maxlength="20"
             @input="picNameCheck"
           ></el-input>
         </el-form-item>
@@ -158,17 +158,17 @@ export default {
   methods: {
     // 作者姓名检测 只能输入英文 汉字和·
     nameCheck() {
-      this.manuscriptForm.docAuthor = this.manuscriptForm.docAuthor.replace(
-        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
-        ""
-      );
+      // this.manuscriptForm.docAuthor = this.manuscriptForm.docAuthor.replace(
+      //   /[^a-zA-Z\u4E00-\u9FA5\·]/g,
+      //   ""
+      // );
     },
     // 图片姓名检测 只能输入英文 汉字和·
     picNameCheck() {
-      this.manuscriptForm.picAuthor = this.manuscriptForm.picAuthor.replace(
-        /[^a-zA-Z\u4E00-\u9FA5\·]/g,
-        ""
-      );
+      // this.manuscriptForm.picAuthor = this.manuscriptForm.picAuthor.replace(
+      //   /[^a-zA-Z\u4E00-\u9FA5\·]/g,
+      //   ""
+      // );
     },
     // 上传文件成功后的回调函数
     fileSuccess(response, file, fileList) {

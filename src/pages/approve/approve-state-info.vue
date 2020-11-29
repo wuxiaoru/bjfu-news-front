@@ -65,6 +65,9 @@
               <el-input v-model="status[nowState.status]" disabled></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+            <el-button @click="back('manuscriptForm')">返回</el-button>
+          </el-col>
         </el-row>
       </el-form>
     </el-card>
@@ -193,6 +196,10 @@ export default {
         this.suggestion = "暂无意见";
       }
       this.dialogVisible = true;
+    },
+     //返回跳转回稿件列表界面
+    back(formName) {
+      this.$router.push("/doc-list");
     },
     // 查看编辑意见
     scanedit() {

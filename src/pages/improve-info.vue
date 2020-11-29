@@ -187,6 +187,9 @@ export default {
                 localStorage.setItem("UserName", this.addForm.userName);
                 localStorage.setItem("UserJob", this.addForm.job);
                 localStorage.setItem("UserUnit", this.addForm.unit);
+                localStorage.setItem("UserMail",this.addForm.mail);
+                localStorage.setItem("UserMobile",this.addForm.mobile);
+                localStorage.setItem("UserOfficePhone",this.addForm.officePhone);
                 this.$router.push("/home-main");
               }
             });

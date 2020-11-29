@@ -67,6 +67,9 @@
               <el-input v-model="status[nowState.status]" disabled></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="6">
+              <el-button type="primary" @click="back('manuscriptForm')">返回</el-button>
+          </el-col>
         </el-row>
       </el-form>
     </el-card>
@@ -207,6 +210,10 @@ export default {
         this.suggestion = "暂无意见";
       }
       this.dialogVisible = true;
+    },
+    //返回跳转回稿件列表界面
+    back(formName) {
+      this.$router.push("/news-list");
     },
     // 查看稿件详细状态信息
     scanDetail(id) {
