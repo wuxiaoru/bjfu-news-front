@@ -176,6 +176,10 @@ export default {
           prop: "docAuthor",
           label: "作者"
         },
+         {
+          prop: "userName",
+          label: "投稿人"
+        },
         {
           prop: "unit",
           label: "单位"

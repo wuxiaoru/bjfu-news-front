@@ -41,6 +41,51 @@
 import global_ from '../../utils/constant'
 export default {
   data() {
+    // 自定义的邮箱校验规则
+    var checkEmail = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
+      const mailReg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/;
+      setTimeout(() => {
+        if (mailReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的邮箱格式"));
+        }
+      }, 100);
+    };
+    // 自定义 手机号校验规则
+    var checkPhone = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
+      const phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+      setTimeout(() => {
+        if (phoneReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的手机号"));
+        }
+      }, 100);
+    };
+    // 自定义办公电话校验规则
+    var checkTel = (rule, value, callback) => {
+      if (value == "") {
+        callback();
+        return;
+      }
+      const telReg = /^((0\d{2,3})-)?(\d{7,8})(-(\d{3,}))?$/;
+      setTimeout(() => {
+        if (telReg.test(value)) {
+          callback();
+        } else {
+          callback(new Error("请输入正确的电话号"));
+        }
+      }, 100);
+    };
     return {
       // form表单绑定的数据
       formLabelAlign: {
@@ -52,6 +97,24 @@ export default {
         officePhone:"",
         mobile:"",
         mail:""
+      },
+      rules: {
+        mail: [{ validator: checkEmail, trigger: "blur" }],
+        mobile: [
+          { required: true, message: "请输入手机号", trigger: "blur" },
+          { validator: checkPhone, trigger: "blur" },
+        ],
+        officePhone: [
+          { required: true, message: "请输入办公电话", trigger: "blur" },
+          { validator: checkTel, trigger: "blur" },
+        ],
+        // 单位
+        unit: [{ required: true, message: "请选择单位", trigger: "change" }],
+        // 人员名称
+        userName: [
+          { required: true, message: "请输入人员名称", trigger: "blur" },
+        ],
+        job: [{ required: true, message: "请输入职务", trigger: "blur" }],
       },
       // 单位列表
       unitList:global_.unit

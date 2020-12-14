@@ -147,6 +147,10 @@ export default {
           label: "作者"
         },
         {
+          prop: "userName",
+          label: "投稿人"
+        },
+        {
           prop: "submitTime",
           label: "提交日期",
           sortable: true
